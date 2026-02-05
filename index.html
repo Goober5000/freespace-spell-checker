@@ -817,8 +817,8 @@
                 return; // Custom languages don't auto-load
             }
             
-            console.log(`Attempting to load dictionary: ${lang.code} from Typo.js/typo/../../dictionaries/${lang.code}/`);
-            console.log('(Typo.js will look relative to its own location at Typo.js/typo/)');
+            console.log(`Attempting to load dictionary: ${lang.code} from Typo.js/../dictionaries/${lang.code}/`);
+            console.log('(Typo.js will look relative to its own location at Typo.js/)');
             
             document.getElementById('dictionaryStatus').innerHTML = 
                 `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
@@ -829,14 +829,14 @@
                 if (!callbackFired) {
                     console.error('Dictionary load timeout - callback never fired');
                     document.getElementById('dictionaryStatus').innerHTML = 
-                        `<div class="status-message status-error">❌ Dictionary loading timed out. Typo.js may not be finding files at ../../dictionaries/${lang.code}/ (relative to Typo.js location)</div>`;
+                        `<div class="status-message status-error">❌ Dictionary loading timed out. Typo.js may not be finding files at ../dictionaries/${lang.code}/ (relative to Typo.js location)</div>`;
                 }
             }, 10000); // 10 second timeout
 
             try {
                 console.log('Creating Typo instance...');
                 dictionary = new Typo(lang.code, false, false, { 
-                    dictionaryPath: "../../dictionaries",
+                    dictionaryPath: "../dictionaries",
                     loadedCallback: function(err, dict) {
                         callbackFired = true;
                         clearTimeout(timeoutId);
