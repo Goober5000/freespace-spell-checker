@@ -817,19 +817,38 @@
                 return; // Custom languages don't auto-load
             }
             
+            console.log(`Attempting to load dictionary: ${lang.code} from dictionaries/${lang.code}/`);
+            
             document.getElementById('dictionaryStatus').innerHTML = 
                 `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
 
+            // Set a timeout to detect if the callback never fires
+            let callbackFired = false;
+            const timeoutId = setTimeout(() => {
+                if (!callbackFired) {
+                    console.error('Dictionary load timeout - callback never fired');
+                    document.getElementById('dictionaryStatus').innerHTML = 
+                        `<div class="status-message status-error">❌ Dictionary loading timed out. Files may not be available at dictionaries/${lang.code}/</div>`;
+                }
+            }, 10000); // 10 second timeout
+
             try {
+                console.log('Creating Typo instance...');
                 dictionary = new Typo(lang.code, false, false, { 
                     dictionaryPath: "dictionaries",
                     loadedCallback: function(err, dict) {
+                        callbackFired = true;
+                        clearTimeout(timeoutId);
+                        
+                        console.log('Typo loadedCallback fired', { err, dict });
+                        
                         if (err) {
-                            console.error('Auto-load error:', err);
+                            console.error('Dictionary load error:', err);
                             document.getElementById('dictionaryStatus').innerHTML = 
-                                `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary. Please check that the dictionary files are available.</div>`;
+                                `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(String(err))}</div>`;
                         } else {
                             dictionary = dict;
+                            console.log('Dictionary loaded successfully');
                             document.getElementById('dictionaryStatus').innerHTML = 
                                 `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
                             document.getElementById('uploadSection').classList.remove('disabled');
@@ -842,10 +861,13 @@
                         }
                     }
                 });
+                console.log('Typo instance created, waiting for callback...');
             } catch (error) {
-                console.error('Auto-load error:', error);
+                callbackFired = true;
+                clearTimeout(timeoutId);
+                console.error('Typo constructor error:', error);
                 document.getElementById('dictionaryStatus').innerHTML = 
-                    `<div class="status-message status-error">❌ Failed to load dictionary: ${escapeHtml(error.message)}</div>`;
+                    `<div class="status-message status-error">❌ Failed to initialize dictionary: ${escapeHtml(error.message)}</div>`;
             }
         }
 
