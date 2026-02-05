@@ -486,25 +486,52 @@
         <div class="content">
             <div class="setup-section">
                 <div class="setup-title">📚 Step 1: Load Dictionary</div>
-                <div class="setup-instructions">
+                
+                <!-- Language Selector -->
+                <div style="margin-bottom: 20px;">
+                    <label class="file-upload-label" for="languageSelect">Select Language:</label>
+                    <select id="languageSelect" style="padding: 8px 12px; border: 2px solid #e1e8ed; border-radius: 6px; font-size: 14px; cursor: pointer; width: 300px; max-width: 100%;">
+                        <optgroup label="English">
+                            <option value="en_US">English (US)</option>
+                            <option value="en_GB">English (UK)</option>
+                            <option value="en_CA">English (Canada)</option>
+                            <option value="en_AU">English (Australia)</option>
+                            <option value="en_ZA">English (South Africa)</option>
+                        </optgroup>
+                        <optgroup label="Other Languages">
+                            <option value="de_DE">German (Germany)</option>
+                            <option value="es_ES">Spanish (Spain)</option>
+                            <option value="fr_FR">French (France)</option>
+                            <option value="it_IT">Italian (Italy)</option>
+                            <option value="pt_BR">Portuguese (Brazil)</option>
+                            <option value="pl_PL">Polish (Poland)</option>
+                            <option value="ru_RU">Russian (Russia)</option>
+                        </optgroup>
+                        <optgroup label="Custom">
+                            <option value="custom">Custom/Other Language</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="setup-instructions" id="dictionaryInstructions">
                     <strong>Recommended Method:</strong> Manually upload the dictionary files below.
                     <br><br>
-                    Download the dictionary files from the <a href="https://github.com/cfinke/Typo.js/tree/master/typo/dictionaries/en_US" target="_blank">Typo.js repository</a>:
-                    <ul style="margin: 10px 0 10px 20px;">
-                        <li><code>en_US.aff</code> - Click the file, then click "Raw", then Ctrl+S to save</li>
-                        <li><code>en_US.dic</code> - Click the file, then click "Raw", then Ctrl+S to save</li>
+                    Download the dictionary files from the <a href="https://github.com/LibreOffice/dictionaries" target="_blank" id="dictionaryRepoLink">LibreOffice dictionaries repository</a>:
+                    <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
+                        <li><code id="affFileName">en_US.aff</code> - Affix rules file</li>
+                        <li><code id="dicFileName">en_US.dic</code> - Dictionary file</li>
                     </ul>
                     <em style="font-size: 13px; color: #666;">Note: Auto-load requires running via a web server due to browser security restrictions. Manual upload works immediately.</em>
                 </div>
                 
                 <div class="file-upload-group">
-                    <label class="file-upload-label">.aff file (affix rules):</label>
+                    <label class="file-upload-label" id="affLabel">.aff file (affix rules):</label>
                     <input type="file" id="affFileInput" accept=".aff">
                     <span id="affStatus"></span>
                 </div>
 
                 <div class="file-upload-group">
-                    <label class="file-upload-label">.dic file (dictionary):</label>
+                    <label class="file-upload-label" id="dicLabel">.dic file (dictionary):</label>
                     <input type="file" id="dicFileInput" accept=".dic">
                     <span id="dicStatus"></span>
                 </div>
@@ -615,6 +642,97 @@
         let affData = null;
         let dicData = null;
 
+        // Language configuration - maps language codes to their file naming conventions
+        const languageConfig = {
+            'en_US': { code: 'en_US', affFile: 'en_US.aff', dicFile: 'en_US.dic', path: 'dictionaries/en_US', repoPath: 'en' },
+            'en_GB': { code: 'en_GB', affFile: 'en_GB.aff', dicFile: 'en_GB.dic', path: 'dictionaries/en_GB', repoPath: 'en' },
+            'en_CA': { code: 'en_CA', affFile: 'en_CA.aff', dicFile: 'en_CA.dic', path: 'dictionaries/en_CA', repoPath: 'en' },
+            'en_AU': { code: 'en_AU', affFile: 'en_AU.aff', dicFile: 'en_AU.dic', path: 'dictionaries/en_AU', repoPath: 'en' },
+            'en_ZA': { code: 'en_ZA', affFile: 'en_ZA.aff', dicFile: 'en_ZA.dic', path: 'dictionaries/en_ZA', repoPath: 'en' },
+            'de_DE': { code: 'de_DE', affFile: 'de_DE.aff', dicFile: 'de_DE.dic', path: 'dictionaries/de_DE', repoPath: 'de' },
+            'es_ES': { code: 'es_ES', affFile: 'es_ES.aff', dicFile: 'es_ES.dic', path: 'dictionaries/es_ES', repoPath: 'es' },
+            'fr_FR': { code: 'fr_FR', affFile: 'fr_FR.aff', dicFile: 'fr_FR.dic', path: 'dictionaries/fr_FR', repoPath: 'fr_FR' },
+            'it_IT': { code: 'it_IT', affFile: 'it_IT.aff', dicFile: 'it_IT.dic', path: 'dictionaries/it_IT', repoPath: 'it_IT' },
+            'pt_BR': { code: 'pt_BR', affFile: 'pt_BR.aff', dicFile: 'pt_BR.dic', path: 'dictionaries/pt_BR', repoPath: 'pt_BR' },
+            'pl_PL': { code: 'pl_PL', affFile: 'pl_PL.aff', dicFile: 'pl_PL.dic', path: 'dictionaries/pl_PL', repoPath: 'pl_PL' },
+            'ru_RU': { code: 'ru_RU', affFile: 'ru_RU.aff', dicFile: 'ru_RU.dic', path: 'dictionaries/ru_RU', repoPath: 'ru_RU' },
+            'custom': { code: 'custom', affFile: 'custom.aff', dicFile: 'custom.dic', path: null, repoPath: null }
+        };
+
+        // Get selected language configuration
+        function getSelectedLanguage() {
+            const select = document.getElementById('languageSelect');
+            const langCode = select.value;
+            return languageConfig[langCode];
+        }
+
+        // Update UI elements based on selected language
+        function updateLanguageUI() {
+            const lang = getSelectedLanguage();
+            const isCustom = lang.code === 'custom';
+            
+            // Update file name displays
+            document.getElementById('affFileName').textContent = lang.affFile;
+            document.getElementById('dicFileName').textContent = lang.dicFile;
+            
+            // Update file input labels
+            document.getElementById('affLabel').textContent = isCustom ? 
+                '.aff file (affix rules):' : 
+                lang.affFile + ':';
+            document.getElementById('dicLabel').textContent = isCustom ? 
+                '.dic file (dictionary):' : 
+                lang.dicFile + ':';
+            
+            // Update repository link
+            const repoLink = document.getElementById('dictionaryRepoLink');
+            if (isCustom) {
+                repoLink.href = 'https://github.com/LibreOffice/dictionaries';
+                repoLink.textContent = 'LibreOffice dictionaries repository';
+            } else {
+                repoLink.href = `https://github.com/LibreOffice/dictionaries/tree/master/${lang.repoPath}`;
+                repoLink.textContent = `LibreOffice dictionaries repository (${lang.code})`;
+            }
+            
+            // Update instructions for custom languages
+            const instructions = document.getElementById('dictionaryInstructions');
+            if (isCustom) {
+                instructions.innerHTML = `
+                    <strong>Custom Language:</strong> Upload your own dictionary files below.
+                    <br><br>
+                    You can find dictionaries for many languages in the <a href="https://github.com/LibreOffice/dictionaries" target="_blank">LibreOffice dictionaries repository</a>.
+                    <br><br>
+                    <em style="font-size: 13px; color: #666;">Note: Dictionary files must be in Hunspell format (.aff and .dic).</em>
+                `;
+            } else {
+                instructions.innerHTML = `
+                    <strong>Recommended Method:</strong> Manually upload the dictionary files below.
+                    <br><br>
+                    Download the dictionary files from the <a href="${repoLink.href}" target="_blank" id="dictionaryRepoLink">${repoLink.textContent}</a>:
+                    <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
+                        <li><code id="affFileName">${lang.affFile}</code> - Affix rules file</li>
+                        <li><code id="dicFileName">${lang.dicFile}</code> - Dictionary file</li>
+                    </ul>
+                    <em style="font-size: 13px; color: #666;">Note: Auto-load requires running via a web server due to browser security restrictions. Manual upload works immediately.</em>
+                `;
+            }
+            
+            // Clear any loaded dictionary data when switching languages
+            affData = null;
+            dicData = null;
+            dictionary = null;
+            document.getElementById('affStatus').textContent = '';
+            document.getElementById('dicStatus').textContent = '';
+            document.getElementById('dictionaryStatus').innerHTML = '';
+            document.getElementById('uploadSection').classList.add('disabled');
+            document.getElementById('selectBtn').disabled = true;
+        }
+
+        // Language selector change handler
+        document.getElementById('languageSelect').addEventListener('change', updateLanguageUI);
+
+        // Initialize UI with default language
+        updateLanguageUI();
+
         // Escape user-supplied text before inserting into innerHTML.
         // Must be applied to any string that originates from file content or filenames.
         function escapeHtml(str) {
@@ -716,21 +834,29 @@
         }
 
         function tryAutoLoad() {
+            const lang = getSelectedLanguage();
+            
+            if (lang.code === 'custom') {
+                document.getElementById('dictionaryStatus').innerHTML = 
+                    '<div class="status-message status-error">❌ Auto-load is not available for custom languages. Please use manual upload.</div>';
+                return;
+            }
+            
             document.getElementById('dictionaryStatus').innerHTML = 
-                '<div class="status-message status-info">⏳ Attempting to auto-load dictionary from Typo.js/typo/dictionaries/en_US/...</div>';
+                `<div class="status-message status-info">⏳ Attempting to auto-load ${lang.code} dictionary from ${lang.path}/...</div>`;
 
             try {
-                dictionary = new Typo("en_US", false, false, { 
-                    dictionaryPath: "Typo.js/typo/dictionaries",
+                dictionary = new Typo(lang.code, false, false, { 
+                    dictionaryPath: "dictionaries",
                     loadedCallback: function(err, dict) {
                         if (err) {
                             console.error('Auto-load error:', err);
                             document.getElementById('dictionaryStatus').innerHTML = 
-                                '<div class="status-message status-error">❌ Auto-load failed. Please ensure Typo.js submodule is initialized, or use manual upload below.</div>';
+                                `<div class="status-message status-error">❌ Auto-load failed for ${lang.code}. Please ensure dictionary files exist in ${lang.path}/, or use manual upload below.</div>`;
                         } else {
                             dictionary = dict;
                             document.getElementById('dictionaryStatus').innerHTML = 
-                                '<div class="status-message status-success">✓ Dictionary auto-loaded successfully! You can now process mission files.</div>';
+                                `<div class="status-message status-success">✓ Dictionary auto-loaded successfully (${lang.code})! You can now process mission files.</div>`;
                             document.getElementById('uploadSection').classList.remove('disabled');
                             document.getElementById('selectBtn').disabled = false;
                         }
@@ -765,10 +891,11 @@
 
         function checkDictionaryReady() {
             if (affData && dicData) {
+                const lang = getSelectedLanguage();
                 try {
-                    dictionary = new Typo("en_US", affData, dicData);
+                    dictionary = new Typo(lang.code, affData, dicData);
                     document.getElementById('dictionaryStatus').innerHTML = 
-                        '<div class="status-message status-success">✓ Dictionary loaded successfully! You can now process mission files.</div>';
+                        `<div class="status-message status-success">✓ Dictionary loaded successfully (${lang.code})! You can now process mission files.</div>`;
                     document.getElementById('uploadSection').classList.remove('disabled');
                     document.getElementById('selectBtn').disabled = false;
                 } catch (error) {

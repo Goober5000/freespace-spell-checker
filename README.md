@@ -2,19 +2,29 @@
 
 A specialized spell checker for FreeSpace mission and table files that uses the Typo.js library to check spelling within XSTR() strings.
 
-## Files Included
+## Repository Structure
 
-- `freespace-spell-checker-typo.html` - The main spell checker application
-- `typo.js` - A copy of the Typo.js library (optional, you can use the one from the repository)
+This repository includes:
+
+- `index.html` - The main spell checker application
+- `Typo.js/` - Typo.js library as a git submodule
+- `dictionaries/` - Dictionary files for 12 languages
 - `README.md` - This documentation
+- `download-dictionaries.sh` - Script to download/update dictionary files
+- `DICTIONARY_DOWNLOAD.md` - Manual download instructions for dictionaries
 
-## What You Need to Download
+## Quick Start
 
-- The `typo` folder from the [Typo.js repository](https://github.com/cfinke/Typo.js)
-- Dictionary files: `en_US.aff` and `en_US.dic` from the [dictionaries folder](https://github.com/cfinke/Typo.js/tree/master/typo/dictionaries/en_US)
+**For end users:** Just download `index.html` and the dictionary files for your language(s) from the [LibreOffice dictionaries repository](https://github.com/LibreOffice/dictionaries), then open `index.html` and upload your dictionaries.
+
+**For developers:** Clone this repository with submodules:
+```bash
+git clone --recurse-submodules [repository-url]
+```
 
 ## Features
 
+- ✅ **Multi-language support** - includes 12 dictionaries: English (US, UK, Canada, Australia, South Africa), German, Spanish, French, Italian, Portuguese (Brazil), Polish, Russian, plus custom dictionary option
 - ✅ Extracts and spell-checks text from XSTR() formatted strings
 - ✅ **Smart proper noun protection** - capitalized words and ALL CAPS acronyms are NOT auto-corrected
 - ✅ **Ship qualifier detection** - recognizes ship prefixes like GTF, NTD, SFr when followed by ship names
@@ -47,53 +57,53 @@ A specialized spell checker for FreeSpace mission and table files that uses the 
 
 **This is the easiest method** because it works immediately without any web server setup.
 
-1. Download the dictionary files from GitHub:
-   - Go to [Typo.js dictionaries folder](https://github.com/cfinke/Typo.js/tree/master/typo/dictionaries/en_US)
-   - Click on `en_US.aff` → Click "Raw" button → Save the file (Ctrl+S or Cmd+S)
-   - Click on `en_US.dic` → Click "Raw" button → Save the file (Ctrl+S or Cmd+S)
+1. Choose your language and download the dictionary files:
+   - The spell checker supports 12 languages by default
+   - Go to [LibreOffice dictionaries repository](https://github.com/LibreOffice/dictionaries)
+   - Navigate to your language folder (e.g., `en/` for English, `de/` for German, `es/` for Spanish)
+   - Download both the `.aff` and `.dic` files for your language
+   - See the language selector in the application for the exact filenames needed
 
-2. Download the Typo.js repository:
-   - Go to [Typo.js repository](https://github.com/cfinke/Typo.js)
-   - Click "Code" → "Download ZIP"
-   - Extract the ZIP file
+2. Open `index.html` in Chrome or Brave
 
-3. Set up the folder structure:
-   ```
-   your-folder/
-   ├── freespace-spell-checker-typo.html
-   └── typo/
-       └── typo.js
-   ```
-   Copy just the `typo` folder from the extracted repository to the same location as the HTML file.
+3. Select your language from the dropdown menu
 
-4. Open `freespace-spell-checker-typo.html` in Chrome or Brave
-
-5. Upload the dictionary files:
-   - Click "Choose File" next to ".aff file" and select `en_US.aff`
-   - Click "Choose File" next to ".dic file" and select `en_US.dic`
+4. Upload the dictionary files:
+   - Click "Choose File" next to the `.aff` file input and select your language's `.aff` file
+   - Click "Choose File" next to the `.dic` file input and select your language's `.dic` file
    - The dictionary will load and you'll see a green success message
+
+**Available Languages:**
+- English: US, UK, Canada, Australia, South Africa
+- Other Languages: German, Spanish, French, Italian, Portuguese (Brazil), Polish, Russian
+- Custom: Upload any Hunspell-format dictionary for other languages
 
 ### Advanced: Auto-Load (Web Server Required)
 
 **Why manual upload is recommended:** Browsers block local file loading via XMLHttpRequest for security reasons. When you open an HTML file directly (file:// URLs), the auto-load feature cannot access the dictionary files even if they're in the correct location.
 
-**If you want to use auto-load anyway:**
+**If you want to use auto-load:**
 
-1. Download the full [Typo.js repository](https://github.com/cfinke/Typo.js) and extract it
+This tool is designed to be deployed to GitHub Pages with dictionary files included in the repository. For local development:
 
-2. Place `freespace-spell-checker-typo.html` next to the `typo` folder:
+1. Clone or download this repository with the dictionary files in the `dictionaries/` folder:
    ```
-   your-folder/
-   ├── freespace-spell-checker-typo.html
-   └── typo/
-       ├── typo.js
-       └── dictionaries/
-           └── en_US/
-               ├── en_US.aff
-               └── en_US.dic
+   repository-root/
+   ├── index.html
+   ├── Typo.js/          (submodule)
+   │   └── typo/
+   │       └── typo.js
+   └── dictionaries/
+       ├── en_US/
+       │   ├── en_US.aff
+       │   └── en_US.dic
+       ├── en_GB/
+       │   ├── en_GB.aff
+       │   └── en_GB.dic
+       └── [other languages]/
    ```
 
-3. Start a local web server in `your-folder`:
+2. Start a local web server in the repository root:
    ```bash
    # Python 3
    python -m http.server 8000
@@ -102,9 +112,9 @@ A specialized spell checker for FreeSpace mission and table files that uses the 
    npx serve
    ```
 
-4. Open your browser to `http://localhost:8000/freespace-spell-checker-typo.html`
+3. Open your browser to `http://localhost:8000/`
 
-5. Click "Try Auto-Load Dictionary"
+4. Select your language from the dropdown and click "Try Auto-Load Dictionary"
 
 ## Usage
 
