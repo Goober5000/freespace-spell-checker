@@ -836,7 +836,7 @@
             try {
                 console.log('Creating Typo instance...');
                 dictionary = new Typo(lang.code, false, false, { 
-                    dictionaryPath: "../../../dictionaries",
+                    dictionaryPath: "dictionaries",
                     loadedCallback: function(err, dict) {
                         callbackFired = true;
                         clearTimeout(timeoutId);
