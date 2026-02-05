@@ -53,38 +53,36 @@ git clone --recurse-submodules [repository-url]
 
 ## Setup
 
-### Recommended Method: Manual Dictionary Upload
+### Using the Deployed Version (Recommended)
 
-**This is the easiest method** because it works immediately without any web server setup.
+1. Visit [https://goober5000.github.io/freespace-spell-checker/](https://goober5000.github.io/freespace-spell-checker/)
 
-1. Choose your language and download the dictionary files:
-   - The spell checker supports 12 languages by default
-   - Go to [LibreOffice dictionaries repository](https://github.com/LibreOffice/dictionaries)
-   - Navigate to your language folder (e.g., `en/` for English, `de/` for German, `es/` for Spanish)
-   - Download both the `.aff` and `.dic` files for your language
-   - See the language selector in the application for the exact filenames needed
+2. Select your language from the dropdown menu
 
-2. Open `index.html` in Chrome or Brave
+3. The dictionary will automatically load - you'll see a green success message
 
-3. Select your language from the dropdown menu
-
-4. Upload the dictionary files:
-   - Click "Choose File" next to the `.aff` file input and select your language's `.aff` file
-   - Click "Choose File" next to the `.dic` file input and select your language's `.dic` file
-   - The dictionary will load and you'll see a green success message
+4. You're ready to process mission files!
 
 **Available Languages:**
 - English: US, UK, Canada, Australia, South Africa
 - Other Languages: German, Spanish, French, Italian, Portuguese (Brazil), Polish, Russian
 - Custom: Upload any Hunspell-format dictionary for other languages
 
-### Advanced: Auto-Load (Web Server Required)
+### Using a Custom Dictionary
 
-**Why manual upload is recommended:** Browsers block local file loading via XMLHttpRequest for security reasons. When you open an HTML file directly (file:// URLs), the auto-load feature cannot access the dictionary files even if they're in the correct location.
+If you need a language that's not in the dropdown:
 
-**If you want to use auto-load:**
+1. Visit the tool and select "Custom/Other Language" from the dropdown
 
-This tool is designed to be deployed to GitHub Pages with dictionary files included in the repository. For local development:
+2. Download your dictionary files from the [LibreOffice dictionaries repository](https://github.com/LibreOffice/dictionaries)
+
+3. Upload both the `.aff` and `.dic` files using the file upload buttons
+
+4. The dictionary will load and you can start processing files
+
+### Local Development
+
+For developers working on this tool locally:
 
 1. Clone or download this repository with the dictionary files in the `dictionaries/` folder:
    ```
@@ -114,11 +112,11 @@ This tool is designed to be deployed to GitHub Pages with dictionary files inclu
 
 3. Open your browser to `http://localhost:8000/`
 
-4. Select your language from the dropdown and click "Try Auto-Load Dictionary"
+4. Select your language from the dropdown - the dictionary will auto-load
 
 ## Usage
 
-1. Load the dictionary using the recommended manual upload method
+1. Select your language - the dictionary will load automatically (or upload custom dictionary files if using a non-standard language)
 2. Once the dictionary is loaded, drag and drop your files (.fs2 mission files, .tbl/.tbm table files), or click "Select Files"
 3. Click "Process Files" to begin spell checking
 4. Review the results:
@@ -250,16 +248,13 @@ Does not work in Firefox due to differences in file loading APIs.
 
 ## Troubleshooting
 
-**"Failed to execute 'send' on 'XMLHttpRequest'" or "Failed to load 'file://...'" error:**
-- This is a browser security restriction when opening HTML files directly from your filesystem
-- **Solution:** Use the manual upload method instead of auto-load
-- **Alternative:** Run via a local web server (see Advanced setup above)
+**Dictionary fails to load:**
+- Make sure you're using a supported browser (Chrome or Brave)
+- Check that you have an internet connection (dictionaries load from GitHub Pages)
+- If using a custom language, verify the files are in Hunspell format (.aff and .dic)
+- Check browser console (F12) for error messages
 
-**"Auto-load failed" error:**
-- This happens when opening the HTML file directly (file:// URLs)
-- Use manual dictionary upload instead - it works perfectly and is easier
-
-**Dictionary files not loading:**
+**Custom dictionary files not loading:**
 - Make sure you downloaded the files as "Raw" from GitHub (not the GitHub HTML page)
 - Verify the files are actually .aff and .dic (not .txt or .html)
 - Check that the files aren't empty
@@ -269,9 +264,10 @@ Does not work in Firefox due to differences in file loading APIs.
 - Check browser console (F12) for error messages
 - Ensure files contain XSTR() formatted strings
 
-**CORS errors in console:**
-- These are expected when using file:// URLs
-- Use manual upload method to avoid these errors
+**Running locally:**
+- If developing locally, you need to run a web server for dictionaries to load
+- Use: `python -m http.server 8000` or `npx serve`
+- Open `http://localhost:8000/` (not file:// URLs)
 
 ## FAQ
 

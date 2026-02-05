@@ -514,38 +514,26 @@
                 </div>
                 
                 <div class="setup-instructions" id="dictionaryInstructions">
-                    <strong>Recommended Method:</strong> Manually upload the dictionary files below.
-                    <br><br>
                     Download the dictionary files from the <a href="https://github.com/LibreOffice/dictionaries" target="_blank" id="dictionaryRepoLink">LibreOffice dictionaries repository</a>:
                     <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
                         <li><code id="affFileName">en_US.aff</code> - Affix rules file</li>
                         <li><code id="dicFileName">en_US.dic</code> - Dictionary file</li>
                     </ul>
-                    <em style="font-size: 13px; color: #666;">Note: Auto-load requires running via a web server due to browser security restrictions. Manual upload works immediately.</em>
                 </div>
                 
-                <div class="file-upload-group">
-                    <label class="file-upload-label" id="affLabel">.aff file (affix rules):</label>
-                    <input type="file" id="affFileInput" accept=".aff">
-                    <span id="affStatus"></span>
-                </div>
-
-                <div class="file-upload-group">
-                    <label class="file-upload-label" id="dicLabel">.dic file (dictionary):</label>
-                    <input type="file" id="dicFileInput" accept=".dic">
-                    <span id="dicStatus"></span>
-                </div>
-
-                <details style="margin-top: 20px;">
-                    <summary style="cursor: pointer; color: #667eea; font-weight: 500;">Advanced: Auto-load (requires web server)</summary>
-                    <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
-                        <p style="margin-bottom: 10px; font-size: 14px;">If you're running this via a web server (not just opening the file directly), you can use auto-load:</p>
-                        <button class="btn btn-small" id="autoLoadBtn">Try Auto-Load Dictionary</button>
-                        <p style="margin-top: 10px; font-size: 13px; color: #666;">
-                            To run via web server: <code>python -m http.server 8000</code> or <code>npx serve</code>
-                        </p>
+                <div id="customDictionaryUpload" style="display: none;">
+                    <div class="file-upload-group">
+                        <label class="file-upload-label" id="affLabel">.aff file (affix rules):</label>
+                        <input type="file" id="affFileInput" accept=".aff">
+                        <span id="affStatus"></span>
                     </div>
-                </details>
+
+                    <div class="file-upload-group">
+                        <label class="file-upload-label" id="dicLabel">.dic file (dictionary):</label>
+                        <input type="file" id="dicFileInput" accept=".dic">
+                        <span id="dicStatus"></span>
+                    </div>
+                </div>
 
                 <div id="dictionaryStatus"></div>
             </div>
@@ -671,11 +659,19 @@
             const lang = getSelectedLanguage();
             const isCustom = lang.code === 'custom';
             
+            // Show/hide custom dictionary upload section
+            const uploadSection = document.getElementById('customDictionaryUpload');
+            if (isCustom) {
+                uploadSection.style.display = 'block';
+            } else {
+                uploadSection.style.display = 'none';
+            }
+            
             // Update file name displays
             document.getElementById('affFileName').textContent = lang.affFile;
             document.getElementById('dicFileName').textContent = lang.dicFile;
             
-            // Update file input labels
+            // Update file input labels (for custom mode)
             document.getElementById('affLabel').textContent = isCustom ? 
                 '.aff file (affix rules):' : 
                 lang.affFile + ':';
@@ -693,7 +689,7 @@
                 repoLink.textContent = `LibreOffice dictionaries repository (${lang.code})`;
             }
             
-            // Update instructions for custom languages
+            // Update instructions based on custom vs standard language
             const instructions = document.getElementById('dictionaryInstructions');
             if (isCustom) {
                 instructions.innerHTML = `
@@ -701,18 +697,15 @@
                     <br><br>
                     You can find dictionaries for many languages in the <a href="https://github.com/LibreOffice/dictionaries" target="_blank">LibreOffice dictionaries repository</a>.
                     <br><br>
-                    <em style="font-size: 13px; color: #666;">Note: Dictionary files must be in Hunspell format (.aff and .dic).</em>
+                    <em style="font-size: 13px; color: #666;">Dictionary files must be in Hunspell format (.aff and .dic).</em>
                 `;
             } else {
                 instructions.innerHTML = `
-                    <strong>Recommended Method:</strong> Manually upload the dictionary files below.
-                    <br><br>
                     Download the dictionary files from the <a href="${repoLink.href}" target="_blank" id="dictionaryRepoLink">${repoLink.textContent}</a>:
                     <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
                         <li><code id="affFileName">${lang.affFile}</code> - Affix rules file</li>
                         <li><code id="dicFileName">${lang.dicFile}</code> - Dictionary file</li>
                     </ul>
-                    <em style="font-size: 13px; color: #666;">Note: Auto-load requires running via a web server due to browser security restrictions. Manual upload works immediately.</em>
                 `;
             }
             
@@ -725,6 +718,11 @@
             document.getElementById('dictionaryStatus').innerHTML = '';
             document.getElementById('uploadSection').classList.add('disabled');
             document.getElementById('selectBtn').disabled = true;
+            
+            // Auto-load dictionary for standard languages
+            if (!isCustom) {
+                tryAutoLoad();
+            }
         }
 
         // Language selector change handler
@@ -837,13 +835,11 @@
             const lang = getSelectedLanguage();
             
             if (lang.code === 'custom') {
-                document.getElementById('dictionaryStatus').innerHTML = 
-                    '<div class="status-message status-error">❌ Auto-load is not available for custom languages. Please use manual upload.</div>';
-                return;
+                return; // Custom languages don't auto-load
             }
             
             document.getElementById('dictionaryStatus').innerHTML = 
-                `<div class="status-message status-info">⏳ Attempting to auto-load ${lang.code} dictionary from ${lang.path}/...</div>`;
+                `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
 
             try {
                 dictionary = new Typo(lang.code, false, false, { 
@@ -852,11 +848,11 @@
                         if (err) {
                             console.error('Auto-load error:', err);
                             document.getElementById('dictionaryStatus').innerHTML = 
-                                `<div class="status-message status-error">❌ Auto-load failed for ${lang.code}. Please ensure dictionary files exist in ${lang.path}/, or use manual upload below.</div>`;
+                                `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary. Please check that the dictionary files are available.</div>`;
                         } else {
                             dictionary = dict;
                             document.getElementById('dictionaryStatus').innerHTML = 
-                                `<div class="status-message status-success">✓ Dictionary auto-loaded successfully (${lang.code})! You can now process mission files.</div>`;
+                                `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
                             document.getElementById('uploadSection').classList.remove('disabled');
                             document.getElementById('selectBtn').disabled = false;
                         }
@@ -865,7 +861,7 @@
             } catch (error) {
                 console.error('Auto-load error:', error);
                 document.getElementById('dictionaryStatus').innerHTML = 
-                    '<div class="status-message status-error">❌ Auto-load failed: ' + escapeHtml(error.message) + '. Please use manual upload or check folder structure.</div>';
+                    `<div class="status-message status-error">❌ Failed to load dictionary: ${escapeHtml(error.message)}</div>`;
             }
         }
 
@@ -947,7 +943,6 @@
         });
 
         // Static button/checkbox bindings
-        document.getElementById('autoLoadBtn').addEventListener('click', tryAutoLoad);
         document.getElementById('selectBtn').addEventListener('click', () => fileInput.click());
         document.getElementById('processBtn').addEventListener('click', processFiles);
         document.getElementById('clearBtn').addEventListener('click', resetApp);
