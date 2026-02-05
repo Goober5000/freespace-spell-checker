@@ -667,31 +667,16 @@
                 uploadSection.style.display = 'none';
             }
             
-            // Update file name displays
-            document.getElementById('affFileName').textContent = lang.affFile;
-            document.getElementById('dicFileName').textContent = lang.dicFile;
-            
             // Update file input labels (for custom mode)
-            document.getElementById('affLabel').textContent = isCustom ? 
-                '.aff file (affix rules):' : 
-                lang.affFile + ':';
-            document.getElementById('dicLabel').textContent = isCustom ? 
-                '.dic file (dictionary):' : 
-                lang.dicFile + ':';
-            
-            // Update repository link
-            const repoLink = document.getElementById('dictionaryRepoLink');
             if (isCustom) {
-                repoLink.href = 'https://github.com/LibreOffice/dictionaries';
-                repoLink.textContent = 'LibreOffice dictionaries repository';
-            } else {
-                repoLink.href = `https://github.com/LibreOffice/dictionaries/tree/master/${lang.repoPath}`;
-                repoLink.textContent = `LibreOffice dictionaries repository (${lang.code})`;
+                document.getElementById('affLabel').textContent = '.aff file (affix rules):';
+                document.getElementById('dicLabel').textContent = '.dic file (dictionary):';
             }
             
             // Update instructions based on custom vs standard language
             const instructions = document.getElementById('dictionaryInstructions');
             if (isCustom) {
+                instructions.style.display = 'block';
                 instructions.innerHTML = `
                     <strong>Custom Language:</strong> Upload your own dictionary files below.
                     <br><br>
@@ -700,13 +685,7 @@
                     <em style="font-size: 13px; color: #666;">Dictionary files must be in Hunspell format (.aff and .dic).</em>
                 `;
             } else {
-                instructions.innerHTML = `
-                    Download the dictionary files from the <a href="${repoLink.href}" target="_blank" id="dictionaryRepoLink">${repoLink.textContent}</a>:
-                    <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
-                        <li><code id="affFileName">${lang.affFile}</code> - Affix rules file</li>
-                        <li><code id="dicFileName">${lang.dicFile}</code> - Dictionary file</li>
-                    </ul>
-                `;
+                instructions.style.display = 'none';
             }
             
             // Clear any loaded dictionary data when switching languages
@@ -855,6 +834,11 @@
                                 `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
                             document.getElementById('uploadSection').classList.remove('disabled');
                             document.getElementById('selectBtn').disabled = false;
+                            
+                            // Clear the success message after 2 seconds
+                            setTimeout(() => {
+                                document.getElementById('dictionaryStatus').innerHTML = '';
+                            }, 2000);
                         }
                     }
                 });
