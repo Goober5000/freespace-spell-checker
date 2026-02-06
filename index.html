@@ -868,37 +868,29 @@
                     if (dicLines.length > 1 && dicLines[1].trim().startsWith('/')) {
                         console.log('Detected comment lines in .dic file - removing them...');
                         const originalLineCount = dicLines.length;
-                        const wordCount = parseInt(dicLines[0]);
+                        const declaredWordCount = parseInt(dicLines[0]);
                         
                         console.log(`Original line count: ${originalLineCount}`);
-                        console.log(`Declared word count: ${wordCount}`);
-                        
-                        // Log first 20 lines before cleaning
-                        console.log('First 20 lines BEFORE cleaning:');
-                        for (let i = 0; i < Math.min(20, dicLines.length); i++) {
-                            console.log(`  [${i}] ${dicLines[i].substring(0, 60)}`);
-                        }
+                        console.log(`Declared word count: ${declaredWordCount}`);
                         
                         const cleanedLines = dicLines.filter((line, index) => {
-                            // Keep the word count line
+                            // Keep the word count line (we'll update it later)
                             if (index === 0) return true;
-                            // Remove comment lines (starting with /)
+                            // Remove comment lines (starting with /) and empty lines
                             const trimmed = line.trim();
                             if (trimmed.startsWith('/') || trimmed === '') return false;
                             // Keep word lines
                             return true;
                         });
                         
-                        console.log(`Cleaned line count: ${cleanedLines.length}`);
-                        console.log(`Removed ${originalLineCount - cleanedLines.length} lines`);
-                        console.log(`Expected: 1 (word count) + ${wordCount} (words) = ${wordCount + 1} total lines`);
-                        console.log(`Actual after cleaning: ${cleanedLines.length} lines`);
+                        // Update the word count to match actual number of words
+                        // cleanedLines has: [word_count_line, word1, word2, ..., wordN]
+                        const actualWordCount = cleanedLines.length - 1; // Subtract 1 for the count line itself
+                        cleanedLines[0] = actualWordCount.toString();
                         
-                        // Log first 20 lines after cleaning
-                        console.log('First 20 lines AFTER cleaning:');
-                        for (let i = 0; i < Math.min(20, cleanedLines.length); i++) {
-                            console.log(`  [${i}] ${cleanedLines[i].substring(0, 60)}`);
-                        }
+                        console.log(`Removed ${originalLineCount - cleanedLines.length} comment/empty lines`);
+                        console.log(`Updated word count: ${declaredWordCount} → ${actualWordCount}`);
+                        console.log(`Expected: 1 (word count) + ${actualWordCount} (words) = ${cleanedLines.length} total lines ✓`);
                         
                         dicData = cleanedLines.join('\n');
                     }
