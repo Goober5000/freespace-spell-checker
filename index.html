@@ -841,11 +841,17 @@
                     });
             };
             
-            // Intercept XMLHttpRequest
+            // Intercept XMLHttpRequest to log response content
             XMLHttpRequest.prototype.open = function(...args) {
                 console.log('XHR request:', args[0], args[1]);
                 this.addEventListener('load', function() {
                     console.log(`XHR response for ${args[1]}:`, this.status, this.statusText);
+                    if (this.status === 200) {
+                        const contentLength = this.responseText ? this.responseText.length : 0;
+                        const preview = this.responseText ? this.responseText.substring(0, 100) : '';
+                        console.log(`  Content length: ${contentLength} bytes`);
+                        console.log(`  First 100 chars: "${preview}"`);
+                    }
                 });
                 this.addEventListener('error', function() {
                     console.error(`XHR error for ${args[1]}:`, this.status, this.statusText);
@@ -854,6 +860,16 @@
             };
             
             console.log('Testing multiple dictionary paths...');
+            
+            // Add global error handler to catch any errors from Typo.js
+            const originalOnError = window.onerror;
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error('GLOBAL ERROR CAUGHT:', { message, source, lineno, colno, error });
+                if (originalOnError) {
+                    return originalOnError.apply(this, arguments);
+                }
+                return false;
+            };
             
             // Try different path variations
             const pathsToTry = [
@@ -894,6 +910,11 @@
     
                 try {
                     console.log('Creating Typo instance with path:', testPath);
+                    
+                    // Try two approaches in parallel
+                    
+                    // Approach 1: Let Typo.js load files (original approach)
+                    console.log('Approach 1: Letting Typo.js load files internally...');
                     const testDict = new Typo(lang.code, false, false, { 
                         dictionaryPath: testPath,
                         loadedCallback: function(err, dict) {
@@ -903,6 +924,7 @@
                             // Restore original functions
                             window.fetch = originalFetch;
                             XMLHttpRequest.prototype.open = originalXHROpen;
+                            window.onerror = originalOnError;
                             
                             console.log(`✓ Callback fired for path "${testPath}"!`, { err, dict });
                             
@@ -926,6 +948,60 @@
                             }
                         }
                     });
+                    
+                    // Approach 2: Manually fetch files and pass to Typo (fallback after 1 second)
+                    setTimeout(async () => {
+                        if (!callbackFired) {
+                            console.log('Approach 2: Manually fetching files and passing to Typo...');
+                            try {
+                                const affPath = `${testPath}/${lang.code}/${lang.affFile}`;
+                                const dicPath = `${testPath}/${lang.code}/${lang.dicFile}`;
+                                
+                                console.log(`Fetching: ${affPath}`);
+                                const affResponse = await fetch(affPath);
+                                console.log(`AFF response: ${affResponse.status} ${affResponse.statusText}`);
+                                
+                                console.log(`Fetching: ${dicPath}`);
+                                const dicResponse = await fetch(dicPath);
+                                console.log(`DIC response: ${dicResponse.status} ${dicResponse.statusText}`);
+                                
+                                if (affResponse.ok && dicResponse.ok) {
+                                    const affData = await affResponse.text();
+                                    const dicData = await dicResponse.text();
+                                    
+                                    console.log(`AFF size: ${affData.length} bytes`);
+                                    console.log(`DIC size: ${dicData.length} bytes`);
+                                    console.log(`Creating Typo with manual data...`);
+                                    
+                                    callbackFired = true;
+                                    clearTimeout(timeoutId);
+                                    
+                                    // Restore original functions
+                                    window.fetch = originalFetch;
+                                    XMLHttpRequest.prototype.open = originalXHROpen;
+                                    window.onerror = originalOnError;
+                                    
+                                    dictionary = new Typo(lang.code, affData, dicData);
+                                    console.log(`✓✓✓ SUCCESS! Dictionary loaded manually with path: "${testPath}"`);
+                                    console.log('=== END DEBUG ===');
+                                    
+                                    document.getElementById('dictionaryStatus').innerHTML = 
+                                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
+                                    document.getElementById('uploadSection').classList.remove('disabled');
+                                    document.getElementById('selectBtn').disabled = false;
+                                    
+                                    setTimeout(() => {
+                                        document.getElementById('dictionaryStatus').innerHTML = '';
+                                    }, 2000);
+                                } else {
+                                    console.log('Manual fetch failed - files not found at this path');
+                                }
+                            } catch (manualError) {
+                                console.error('Manual fetch error:', manualError);
+                            }
+                        }
+                    }, 1000);
+                    
                     console.log('Typo instance created, waiting for callback...');
                 } catch (error) {
                     callbackFired = true;
