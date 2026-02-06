@@ -861,6 +861,18 @@
                     console.log('AFF first lines:', affFirstLines);
                     console.log('DIC first lines:', dicFirstLines);
                     
+                    // Check .aff file for issues
+                    const affLines = affData.split('\n');
+                    console.log(`AFF file has ${affLines.length} lines`);
+                    
+                    // Look for SET encoding declaration
+                    const setLine = affLines.find(line => line.trim().startsWith('SET'));
+                    if (setLine) {
+                        console.log('Encoding declaration:', setLine);
+                    } else {
+                        console.warn('No SET encoding declaration found in .aff file');
+                    }
+                    
                     // Some dictionaries (like it_IT) have comment lines in the .dic file
                     // starting with '/'. These break Typo.js, so we need to remove them.
                     // Standard .dic format should only have: word_count, then word/flags lines
@@ -898,6 +910,24 @@
                     console.log('Creating Typo instance...');
                     
                     try {
+                        // For problematic dictionaries, try processing in chunks to find the issue
+                        if (lang.code === 'it_IT') {
+                            console.log('Testing Italian dictionary in chunks...');
+                            const lines = dicData.split('\n');
+                            const wordCount = parseInt(lines[0]);
+                            
+                            // Try with just first 1000 words to see if basic structure works
+                            const testLines = [1000].concat(lines.slice(1, 1001));
+                            const testDic = testLines.join('\n');
+                            
+                            console.log('Testing with first 1000 words...');
+                            const testDict = new Typo(lang.code, affData, testDic);
+                            console.log('✓ First 1000 words loaded successfully!');
+                            
+                            // If that works, try with all words
+                            console.log('Now trying with all words...');
+                        }
+                        
                         dictionary = new Typo(lang.code, affData, dicData);
                         console.log(`✓ Dictionary loaded successfully (${lang.code})`);
                     } catch (typoError) {
