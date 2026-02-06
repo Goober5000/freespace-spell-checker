@@ -817,202 +817,56 @@
                 return; // Custom languages don't auto-load
             }
             
-            console.log('=== DICTIONARY LOADING DEBUG ===');
-            console.log(`Language: ${lang.code}`);
-            console.log(`Config:`, lang);
-            console.log(`Current page URL: ${window.location.href}`);
-            console.log(`Typo.js script location: Typo.js/typo/typo.js`);
+            document.getElementById('dictionaryStatus').innerHTML = 
+                `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
+
+            // Use the approach that works: manually fetch files and pass to Typo
+            const dictionaryPath = './dictionaries';
             
-            // Monitor network requests to see what Typo.js is actually fetching
-            const originalFetch = window.fetch;
-            const originalXHROpen = XMLHttpRequest.prototype.open;
-            
-            // Intercept fetch
-            window.fetch = function(...args) {
-                console.log('FETCH request:', args[0]);
-                return originalFetch.apply(this, args)
-                    .then(response => {
-                        console.log(`FETCH response for ${args[0]}:`, response.status, response.ok);
-                        return response;
-                    })
-                    .catch(error => {
-                        console.error(`FETCH error for ${args[0]}:`, error);
-                        throw error;
-                    });
-            };
-            
-            // Intercept XMLHttpRequest to log response content
-            XMLHttpRequest.prototype.open = function(...args) {
-                console.log('XHR request:', args[0], args[1]);
-                this.addEventListener('load', function() {
-                    console.log(`XHR response for ${args[1]}:`, this.status, this.statusText);
-                    if (this.status === 200) {
-                        const contentLength = this.responseText ? this.responseText.length : 0;
-                        const preview = this.responseText ? this.responseText.substring(0, 100) : '';
-                        console.log(`  Content length: ${contentLength} bytes`);
-                        console.log(`  First 100 chars: "${preview}"`);
-                    }
-                });
-                this.addEventListener('error', function() {
-                    console.error(`XHR error for ${args[1]}:`, this.status, this.statusText);
-                });
-                return originalXHROpen.apply(this, args);
-            };
-            
-            console.log('Testing multiple dictionary paths...');
-            
-            // Add global error handler to catch any errors from Typo.js
-            const originalOnError = window.onerror;
-            window.onerror = function(message, source, lineno, colno, error) {
-                console.error('GLOBAL ERROR CAUGHT:', { message, source, lineno, colno, error });
-                if (originalOnError) {
-                    return originalOnError.apply(this, arguments);
-                }
-                return false;
-            };
-            
-            // Try different path variations
-            const pathsToTry = [
-                "../../dictionaries",           // Relative from typo.js
-                "/dictionaries",                // Absolute from root
-                "./dictionaries",               // Relative from current
-                "../dictionaries",              // One level up
-                "dictionaries"                  // Simple relative
-            ];
-            
-            let currentPathIndex = 0;
-            
-            function tryNextPath() {
-                if (currentPathIndex >= pathsToTry.length) {
-                    console.error('All paths failed!');
-                    document.getElementById('dictionaryStatus').innerHTML = 
-                        `<div class="status-message status-error">❌ Could not find dictionary files. Tried multiple paths. Check console for details.</div>`;
-                    // Restore original functions
-                    window.fetch = originalFetch;
-                    XMLHttpRequest.prototype.open = originalXHROpen;
-                    return;
-                }
-                
-                const testPath = pathsToTry[currentPathIndex];
-                console.log(`\n--- Attempting path #${currentPathIndex + 1}: "${testPath}" ---`);
-                
-                document.getElementById('dictionaryStatus').innerHTML = 
-                    `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary (trying path ${currentPathIndex + 1}/${pathsToTry.length})...</div>`;
-    
-                let callbackFired = false;
-                const timeoutId = setTimeout(() => {
-                    if (!callbackFired) {
-                        console.error(`Path "${testPath}" timed out - callback never fired`);
-                        currentPathIndex++;
-                        tryNextPath();
-                    }
-                }, 3000); // 3 second timeout per attempt
-    
+            async function loadDictionary() {
                 try {
-                    console.log('Creating Typo instance with path:', testPath);
+                    const affPath = `${dictionaryPath}/${lang.code}/${lang.affFile}`;
+                    const dicPath = `${dictionaryPath}/${lang.code}/${lang.dicFile}`;
                     
-                    // Try two approaches in parallel
+                    console.log(`Loading dictionary: ${lang.code}`);
+                    console.log(`Fetching: ${affPath}`);
+                    const affResponse = await fetch(affPath);
                     
-                    // Approach 1: Let Typo.js load files (original approach)
-                    console.log('Approach 1: Letting Typo.js load files internally...');
-                    const testDict = new Typo(lang.code, false, false, { 
-                        dictionaryPath: testPath,
-                        loadedCallback: function(err, dict) {
-                            callbackFired = true;
-                            clearTimeout(timeoutId);
-                            
-                            // Restore original functions
-                            window.fetch = originalFetch;
-                            XMLHttpRequest.prototype.open = originalXHROpen;
-                            window.onerror = originalOnError;
-                            
-                            console.log(`✓ Callback fired for path "${testPath}"!`, { err, dict });
-                            
-                            if (err) {
-                                console.error('Dictionary load error:', err);
-                                document.getElementById('dictionaryStatus').innerHTML = 
-                                    `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(String(err))}</div>`;
-                            } else {
-                                dictionary = dict;
-                                console.log(`✓✓✓ SUCCESS! Dictionary loaded with path: "${testPath}"`);
-                                console.log('=== END DEBUG ===');
-                                document.getElementById('dictionaryStatus').innerHTML = 
-                                    `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
-                                document.getElementById('uploadSection').classList.remove('disabled');
-                                document.getElementById('selectBtn').disabled = false;
-                                
-                                // Clear the success message after 2 seconds
-                                setTimeout(() => {
-                                    document.getElementById('dictionaryStatus').innerHTML = '';
-                                }, 2000);
-                            }
-                        }
-                    });
+                    console.log(`Fetching: ${dicPath}`);
+                    const dicResponse = await fetch(dicPath);
                     
-                    // Approach 2: Manually fetch files and pass to Typo (fallback after 1 second)
-                    setTimeout(async () => {
-                        if (!callbackFired) {
-                            console.log('Approach 2: Manually fetching files and passing to Typo...');
-                            try {
-                                const affPath = `${testPath}/${lang.code}/${lang.affFile}`;
-                                const dicPath = `${testPath}/${lang.code}/${lang.dicFile}`;
-                                
-                                console.log(`Fetching: ${affPath}`);
-                                const affResponse = await fetch(affPath);
-                                console.log(`AFF response: ${affResponse.status} ${affResponse.statusText}`);
-                                
-                                console.log(`Fetching: ${dicPath}`);
-                                const dicResponse = await fetch(dicPath);
-                                console.log(`DIC response: ${dicResponse.status} ${dicResponse.statusText}`);
-                                
-                                if (affResponse.ok && dicResponse.ok) {
-                                    const affData = await affResponse.text();
-                                    const dicData = await dicResponse.text();
-                                    
-                                    console.log(`AFF size: ${affData.length} bytes`);
-                                    console.log(`DIC size: ${dicData.length} bytes`);
-                                    console.log(`Creating Typo with manual data...`);
-                                    
-                                    callbackFired = true;
-                                    clearTimeout(timeoutId);
-                                    
-                                    // Restore original functions
-                                    window.fetch = originalFetch;
-                                    XMLHttpRequest.prototype.open = originalXHROpen;
-                                    window.onerror = originalOnError;
-                                    
-                                    dictionary = new Typo(lang.code, affData, dicData);
-                                    console.log(`✓✓✓ SUCCESS! Dictionary loaded manually with path: "${testPath}"`);
-                                    console.log('=== END DEBUG ===');
-                                    
-                                    document.getElementById('dictionaryStatus').innerHTML = 
-                                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
-                                    document.getElementById('uploadSection').classList.remove('disabled');
-                                    document.getElementById('selectBtn').disabled = false;
-                                    
-                                    setTimeout(() => {
-                                        document.getElementById('dictionaryStatus').innerHTML = '';
-                                    }, 2000);
-                                } else {
-                                    console.log('Manual fetch failed - files not found at this path');
-                                }
-                            } catch (manualError) {
-                                console.error('Manual fetch error:', manualError);
-                            }
-                        }
-                    }, 1000);
+                    if (!affResponse.ok || !dicResponse.ok) {
+                        throw new Error(`Failed to fetch dictionary files (${affResponse.status}, ${dicResponse.status})`);
+                    }
                     
-                    console.log('Typo instance created, waiting for callback...');
+                    const affData = await affResponse.text();
+                    const dicData = await dicResponse.text();
+                    
+                    console.log(`Dictionary files loaded: ${affData.length} bytes (aff), ${dicData.length} bytes (dic)`);
+                    console.log('Creating Typo instance...');
+                    
+                    dictionary = new Typo(lang.code, affData, dicData);
+                    
+                    console.log(`✓ Dictionary loaded successfully (${lang.code})`);
+                    
+                    document.getElementById('dictionaryStatus').innerHTML = 
+                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
+                    document.getElementById('uploadSection').classList.remove('disabled');
+                    document.getElementById('selectBtn').disabled = false;
+                    
+                    // Clear the success message after 2 seconds
+                    setTimeout(() => {
+                        document.getElementById('dictionaryStatus').innerHTML = '';
+                    }, 2000);
+                    
                 } catch (error) {
-                    callbackFired = true;
-                    clearTimeout(timeoutId);
-                    console.error(`Typo constructor error with path "${testPath}":`, error);
-                    currentPathIndex++;
-                    tryNextPath();
+                    console.error('Dictionary load error:', error);
+                    document.getElementById('dictionaryStatus').innerHTML = 
+                        `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(error.message)}</div>`;
                 }
             }
             
-            tryNextPath();
+            loadDictionary();
         }
 
         document.getElementById('affFileInput').addEventListener('change', async (e) => {
