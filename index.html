@@ -713,7 +713,10 @@
         // Escape user-supplied text before inserting into innerHTML.
         // Must be applied to any string that originates from file content or filenames.
         function escapeHtml(str) {
-            return str
+            if (str === null || str === undefined) {
+                return '';
+            }
+            return String(str)
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
@@ -843,11 +846,32 @@
                     const dicData = await dicResponse.text();
                     
                     console.log(`Dictionary files loaded: ${affData.length} bytes (aff), ${dicData.length} bytes (dic)`);
+                    
+                    // Validate the dictionary format
+                    if (!affData || affData.length < 10) {
+                        throw new Error('AFF file appears to be empty or corrupted');
+                    }
+                    if (!dicData || dicData.length < 10) {
+                        throw new Error('DIC file appears to be empty or corrupted');
+                    }
+                    
+                    // Log first few lines to diagnose format issues
+                    const affFirstLines = affData.split('\n').slice(0, 5).join('\n');
+                    const dicFirstLines = dicData.split('\n').slice(0, 5).join('\n');
+                    console.log('AFF first lines:', affFirstLines);
+                    console.log('DIC first lines:', dicFirstLines);
+                    
                     console.log('Creating Typo instance...');
                     
-                    dictionary = new Typo(lang.code, affData, dicData);
-                    
-                    console.log(`✓ Dictionary loaded successfully (${lang.code})`);
+                    try {
+                        dictionary = new Typo(lang.code, affData, dicData);
+                        console.log(`✓ Dictionary loaded successfully (${lang.code})`);
+                    } catch (typoError) {
+                        console.error('Typo.js error:', typoError);
+                        // Typo.js sometimes throws strings instead of Error objects
+                        const errorMsg = typoError.message || typoError.toString() || 'Unknown error';
+                        throw new Error(`Typo.js failed to parse dictionary: ${errorMsg}`);
+                    }
                     
                     document.getElementById('dictionaryStatus').innerHTML = 
                         `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
@@ -861,8 +885,19 @@
                     
                 } catch (error) {
                     console.error('Dictionary load error:', error);
+                    
+                    // Handle both Error objects and string errors
+                    let errorMessage = 'Unknown error';
+                    if (error && error.message) {
+                        errorMessage = error.message;
+                    } else if (typeof error === 'string') {
+                        errorMessage = error;
+                    } else if (error) {
+                        errorMessage = error.toString();
+                    }
+                    
                     document.getElementById('dictionaryStatus').innerHTML = 
-                        `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(error.message)}</div>`;
+                        `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(errorMessage)}</div>`;
                 }
             }
             
