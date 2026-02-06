@@ -843,7 +843,7 @@
                     }
                     
                     const affData = await affResponse.text();
-                    const dicData = await dicResponse.text();
+                    let dicData = await dicResponse.text();
                     
                     console.log(`Dictionary files loaded: ${affData.length} bytes (aff), ${dicData.length} bytes (dic)`);
                     
@@ -860,6 +860,26 @@
                     const dicFirstLines = dicData.split('\n').slice(0, 5).join('\n');
                     console.log('AFF first lines:', affFirstLines);
                     console.log('DIC first lines:', dicFirstLines);
+                    
+                    // Some dictionaries (like it_IT) have comment lines in the .dic file
+                    // starting with '/'. These break Typo.js, so we need to remove them.
+                    // Standard .dic format should only have: word_count, then word/flags lines
+                    const dicLines = dicData.split('\n');
+                    if (dicLines.length > 1 && dicLines[1].trim().startsWith('/')) {
+                        console.log('Detected comment lines in .dic file - removing them...');
+                        const wordCount = dicLines[0];
+                        const cleanedLines = dicLines.filter((line, index) => {
+                            // Keep the word count line
+                            if (index === 0) return true;
+                            // Remove comment lines (starting with /)
+                            const trimmed = line.trim();
+                            if (trimmed.startsWith('/') || trimmed === '') return false;
+                            // Keep word lines
+                            return true;
+                        });
+                        dicData = cleanedLines.join('\n');
+                        console.log(`Removed ${dicLines.length - cleanedLines.length} comment/empty lines from .dic file`);
+                    }
                     
                     console.log('Creating Typo instance...');
                     
