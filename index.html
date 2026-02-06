@@ -492,7 +492,7 @@
                     <label class="file-upload-label" for="languageSelect">Select Language:</label>
                     <select id="languageSelect" style="padding: 8px 12px; border: 2px solid #e1e8ed; border-radius: 6px; font-size: 14px; cursor: pointer; width: 300px; max-width: 100%;">
                         <optgroup label="English">
-                            <option value="en_US">English (US)</option>
+                            <option value="en_US" selected>English (US)</option>
                             <option value="en_GB">English (UK)</option>
                             <option value="en_CA">English (Canada)</option>
                             <option value="en_AU">English (Australia)</option>
@@ -910,24 +910,6 @@
                     console.log('Creating Typo instance...');
                     
                     try {
-                        // For problematic dictionaries, try processing in chunks to find the issue
-                        if (lang.code === 'it_IT') {
-                            console.log('Testing Italian dictionary in chunks...');
-                            const lines = dicData.split('\n');
-                            const wordCount = parseInt(lines[0]);
-                            
-                            // Try with just first 1000 words to see if basic structure works
-                            const testLines = [1000].concat(lines.slice(1, 1001));
-                            const testDic = testLines.join('\n');
-                            
-                            console.log('Testing with first 1000 words...');
-                            const testDict = new Typo(lang.code, affData, testDic);
-                            console.log('✓ First 1000 words loaded successfully!');
-                            
-                            // If that works, try with all words
-                            console.log('Now trying with all words...');
-                        }
-                        
                         dictionary = new Typo(lang.code, affData, dicData);
                         console.log(`✓ Dictionary loaded successfully (${lang.code})`);
                     } catch (typoError) {
@@ -938,14 +920,9 @@
                     }
                     
                     document.getElementById('dictionaryStatus').innerHTML = 
-                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission files.</div>`;
+                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission and table files.</div>`;
                     document.getElementById('uploadSection').classList.remove('disabled');
                     document.getElementById('selectBtn').disabled = false;
-                    
-                    // Clear the success message after 2 seconds
-                    setTimeout(() => {
-                        document.getElementById('dictionaryStatus').innerHTML = '';
-                    }, 2000);
                     
                 } catch (error) {
                     console.error('Dictionary load error:', error);
@@ -994,7 +971,7 @@
                 try {
                     dictionary = new Typo(lang.code, affData, dicData);
                     document.getElementById('dictionaryStatus').innerHTML = 
-                        `<div class="status-message status-success">✓ Dictionary loaded successfully (${lang.code})! You can now process mission files.</div>`;
+                        `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission and table files.</div>`;
                     document.getElementById('uploadSection').classList.remove('disabled');
                     document.getElementById('selectBtn').disabled = false;
                 } catch (error) {
