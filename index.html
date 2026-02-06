@@ -867,7 +867,18 @@
                     const dicLines = dicData.split('\n');
                     if (dicLines.length > 1 && dicLines[1].trim().startsWith('/')) {
                         console.log('Detected comment lines in .dic file - removing them...');
-                        const wordCount = dicLines[0];
+                        const originalLineCount = dicLines.length;
+                        const wordCount = parseInt(dicLines[0]);
+                        
+                        console.log(`Original line count: ${originalLineCount}`);
+                        console.log(`Declared word count: ${wordCount}`);
+                        
+                        // Log first 20 lines before cleaning
+                        console.log('First 20 lines BEFORE cleaning:');
+                        for (let i = 0; i < Math.min(20, dicLines.length); i++) {
+                            console.log(`  [${i}] ${dicLines[i].substring(0, 60)}`);
+                        }
+                        
                         const cleanedLines = dicLines.filter((line, index) => {
                             // Keep the word count line
                             if (index === 0) return true;
@@ -877,8 +888,19 @@
                             // Keep word lines
                             return true;
                         });
+                        
+                        console.log(`Cleaned line count: ${cleanedLines.length}`);
+                        console.log(`Removed ${originalLineCount - cleanedLines.length} lines`);
+                        console.log(`Expected: 1 (word count) + ${wordCount} (words) = ${wordCount + 1} total lines`);
+                        console.log(`Actual after cleaning: ${cleanedLines.length} lines`);
+                        
+                        // Log first 20 lines after cleaning
+                        console.log('First 20 lines AFTER cleaning:');
+                        for (let i = 0; i < Math.min(20, cleanedLines.length); i++) {
+                            console.log(`  [${i}] ${cleanedLines[i].substring(0, 60)}`);
+                        }
+                        
                         dicData = cleanedLines.join('\n');
-                        console.log(`Removed ${dicLines.length - cleanedLines.length} comment/empty lines from .dic file`);
                     }
                     
                     console.log('Creating Typo instance...');
