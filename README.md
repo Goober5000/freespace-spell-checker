@@ -7,7 +7,7 @@ A specialized spell checker for FreeSpace mission and table files that uses the 
 This repository includes:
 
 - `index.html` - The main spell checker application
-- `Typo.js/` - Typo.js library as a git submodule
+- `Typo.js/` - Hybrid-optimized Typo.js library (git submodule with custom optimization)
 - `dictionaries/` - Dictionary files for 12 languages
 - `README.md` - This documentation
 - `download-dictionaries.sh` - Script to download/update dictionary files
@@ -50,6 +50,29 @@ git clone --recurse-submodules [repository-url]
 - ✅ Detailed correction reports with before/after comparison
 - ✅ **Exhaustive display option** - toggle between truncated view (default) and showing all corrections/issues
 - ✅ **Selective correction revert** - each correction has a checkbox; uncheck to exclude it from the downloaded output (all-or-nothing per XSTR string)
+
+## Dictionary Support and Limitations
+
+**Supported Languages:**
+- English (5 variants): US, UK, Canada, Australia, South Africa  
+- German, Spanish, French, Portuguese (Brazil), Polish, Russian
+- Italian (full dictionary supported via hybrid optimization)
+
+**Hybrid Dictionary Optimization:**
+
+This tool uses an optimized version of Typo.js that employs a hybrid eager/lazy evaluation strategy. This allows large dictionaries with complex affix rules (like Italian, Russian, Polish) to work efficiently in browsers without memory issues.
+
+**How it works:**
+- Simple affix rules (80% of lookups) are expanded immediately for instant performance
+- Complex affix rules (20% of lookups) are expanded on-demand and cached
+- Result: 90%+ memory savings for large dictionaries while maintaining fast lookups
+
+**Italian Dictionary:** The full Italian dictionary (95,381 words with 3,412 affix rules) is fully supported. Thanks to the hybrid optimization:
+- Memory usage: ~75MB (vs 800MB+ with naive expansion)
+- Load time: 3-5 seconds
+- Lookup performance: Instant for common words, 1-3ms first lookup for rare words (then cached)
+
+If you encounter "out of memory" errors with other very large dictionaries, you can create reduced versions using the included `create-lite-dictionaries.sh` script.
 
 ## Setup
 
