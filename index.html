@@ -1496,6 +1496,75 @@
                 changes.push('alright → all right');
             }
             
+            // Replace "infact" with "in fact"
+            const infactRegex = /\$?\w+('\w+)?/g;
+            const infactMatches = [];
+            let infactMatch;
+            while ((infactMatch = infactRegex.exec(corrected)) !== null) {
+                if (infactMatch[0].toLowerCase() === 'infact') {
+                    infactMatches.push({
+                        text: infactMatch[0],
+                        index: infactMatch.index
+                    });
+                }
+            }
+            
+            if (infactMatches.length > 0) {
+                // Apply replacements in reverse order
+                infactMatches.reverse();
+                for (const match of infactMatches) {
+                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'In fact' : 'in fact';
+                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
+                }
+                changes.push('infact → in fact');
+            }
+            
+            // Replace "enroute" with "en route"
+            const enrouteRegex = /\$?\w+('\w+)?/g;
+            const enrouteMatches = [];
+            let enrouteMatch;
+            while ((enrouteMatch = enrouteRegex.exec(corrected)) !== null) {
+                if (enrouteMatch[0].toLowerCase() === 'enroute') {
+                    enrouteMatches.push({
+                        text: enrouteMatch[0],
+                        index: enrouteMatch.index
+                    });
+                }
+            }
+            
+            if (enrouteMatches.length > 0) {
+                // Apply replacements in reverse order
+                enrouteMatches.reverse();
+                for (const match of enrouteMatches) {
+                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'En route' : 'en route';
+                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
+                }
+                changes.push('enroute → en route');
+            }
+            
+            // Replace "turrent" with "turret"
+            const turrentRegex = /\$?\w+('\w+)?/g;
+            const turrentMatches = [];
+            let turrentMatch;
+            while ((turrentMatch = turrentRegex.exec(corrected)) !== null) {
+                if (turrentMatch[0].toLowerCase() === 'turrent') {
+                    turrentMatches.push({
+                        text: turrentMatch[0],
+                        index: turrentMatch.index
+                    });
+                }
+            }
+            
+            if (turrentMatches.length > 0) {
+                // Apply replacements in reverse order
+                turrentMatches.reverse();
+                for (const match of turrentMatches) {
+                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'Turret' : 'turret';
+                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
+                }
+                changes.push('turrent → turret');
+            }
+            
             // Rule 2: Spell check individual words
             // Use regex to properly tokenize words, including $ variables and contractions
             // IMPORTANT: Tokenize the corrected string (after space corrections) so indices match

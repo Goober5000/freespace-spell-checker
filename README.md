@@ -36,7 +36,7 @@ git clone --recurse-submodules [repository-url]
 - ✅ **Contraction handling** - properly handles "we've", "you've", "they're" without breaking them apart
 - ✅ Preserves FreeSpace variables (words starting with $)
 - ✅ **Special token round-tripping** - `$quote`, `$semicolon`, `$slash` are transparently converted to their characters for processing, then restored afterwards
-- ✅ Fixes "alright" → "all right" automatically
+- ✅ **Common mistake corrections** - automatically fixes "alright" → "all right", "infact" → "in fact", "enroute" → "en route", "turrent" → "turret"
 - ✅ **Automatic spacing corrections** - removes extra spaces, fixes spacing around punctuation
 - ✅ **Two-space-after-sentence option** - for writers who prefer double spacing after sentences
 - ✅ Auto-corrects lowercase spelling errors
@@ -216,6 +216,9 @@ Only text within these XSTR strings is spell-checked. The file structure is pres
    - The parts after apostrophes are NOT spell-checked separately
 8. **Custom Rules**:
    - "alright" → "all right" (always corrected regardless of capitalization)
+   - "infact" → "in fact" (always corrected regardless of capitalization)
+   - "enroute" → "en route" (always corrected regardless of capitalization)
+   - "turrent" → "turret" (always corrected regardless of capitalization)
    - Words starting with $ are never changed (FreeSpace variables)
 9. **Special Token Round-Tripping**:
    - FreeSpace uses special tokens in place of characters that have meaning in the file format
