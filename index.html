@@ -1372,6 +1372,15 @@
                 'ancients': 'Ancients'  // plural only - "ancient" is a common adjective
             };
             
+            // Common word corrections applied before spell checking
+            const commonCorrections = {
+                'alright': 'all right',
+                'alot': 'a lot',
+                'infact': 'in fact',
+                'enroute': 'en route',
+                'turrent': 'turret'
+            };
+            
             // Helper function to check if a period is after an abbreviation
             function isAbbreviation(text, periodIndex) {
                 // Look backward to find the word before the period
@@ -1471,98 +1480,35 @@
                 changes.push(...spaceChanges);
             }
             
-            // Rule 1: Replace "alright" with "all right"
-            // Use tokenized words to find and replace "alright"
+            // Rule 1: Apply common word corrections
+            // Use tokenized words to find and replace common mistakes
             // IMPORTANT: Tokenize the corrected string (after space corrections) so indices match
-            const alrightRegex = /\$?\w+('\w+)?/g;
-            const alrightMatches = [];
-            let alrightMatch;
-            while ((alrightMatch = alrightRegex.exec(corrected)) !== null) {
-                if (alrightMatch[0].toLowerCase() === 'alright') {
-                    alrightMatches.push({
-                        text: alrightMatch[0],
-                        index: alrightMatch.index
-                    });
+            for (const [wrongWord, correctWord] of Object.entries(commonCorrections)) {
+                const wordRegex = /\$?\w+('\w+)?/g;
+                const matches = [];
+                let match;
+                
+                while ((match = wordRegex.exec(corrected)) !== null) {
+                    if (match[0].toLowerCase() === wrongWord) {
+                        matches.push({
+                            text: match[0],
+                            index: match.index
+                        });
+                    }
                 }
-            }
-            
-            if (alrightMatches.length > 0) {
-                // Apply replacements in reverse order
-                alrightMatches.reverse();
-                for (const match of alrightMatches) {
-                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'All right' : 'all right';
-                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
+                
+                if (matches.length > 0) {
+                    // Apply replacements in reverse order to preserve indices
+                    matches.reverse();
+                    for (const m of matches) {
+                        // Preserve capitalization: if original starts with uppercase, capitalize replacement
+                        const replacement = m.text[0] === m.text[0].toUpperCase() 
+                            ? correctWord.charAt(0).toUpperCase() + correctWord.slice(1)
+                            : correctWord;
+                        corrected = corrected.substring(0, m.index) + replacement + corrected.substring(m.index + m.text.length);
+                    }
+                    changes.push(`${wrongWord} → ${correctWord}`);
                 }
-                changes.push('alright → all right');
-            }
-            
-            // Replace "infact" with "in fact"
-            const infactRegex = /\$?\w+('\w+)?/g;
-            const infactMatches = [];
-            let infactMatch;
-            while ((infactMatch = infactRegex.exec(corrected)) !== null) {
-                if (infactMatch[0].toLowerCase() === 'infact') {
-                    infactMatches.push({
-                        text: infactMatch[0],
-                        index: infactMatch.index
-                    });
-                }
-            }
-            
-            if (infactMatches.length > 0) {
-                // Apply replacements in reverse order
-                infactMatches.reverse();
-                for (const match of infactMatches) {
-                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'In fact' : 'in fact';
-                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
-                }
-                changes.push('infact → in fact');
-            }
-            
-            // Replace "enroute" with "en route"
-            const enrouteRegex = /\$?\w+('\w+)?/g;
-            const enrouteMatches = [];
-            let enrouteMatch;
-            while ((enrouteMatch = enrouteRegex.exec(corrected)) !== null) {
-                if (enrouteMatch[0].toLowerCase() === 'enroute') {
-                    enrouteMatches.push({
-                        text: enrouteMatch[0],
-                        index: enrouteMatch.index
-                    });
-                }
-            }
-            
-            if (enrouteMatches.length > 0) {
-                // Apply replacements in reverse order
-                enrouteMatches.reverse();
-                for (const match of enrouteMatches) {
-                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'En route' : 'en route';
-                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
-                }
-                changes.push('enroute → en route');
-            }
-            
-            // Replace "turrent" with "turret"
-            const turrentRegex = /\$?\w+('\w+)?/g;
-            const turrentMatches = [];
-            let turrentMatch;
-            while ((turrentMatch = turrentRegex.exec(corrected)) !== null) {
-                if (turrentMatch[0].toLowerCase() === 'turrent') {
-                    turrentMatches.push({
-                        text: turrentMatch[0],
-                        index: turrentMatch.index
-                    });
-                }
-            }
-            
-            if (turrentMatches.length > 0) {
-                // Apply replacements in reverse order
-                turrentMatches.reverse();
-                for (const match of turrentMatches) {
-                    const replacement = match.text[0] === match.text[0].toUpperCase() ? 'Turret' : 'turret';
-                    corrected = corrected.substring(0, match.index) + replacement + corrected.substring(match.index + match.text.length);
-                }
-                changes.push('turrent → turret');
             }
             
             // Rule 2: Spell check individual words
