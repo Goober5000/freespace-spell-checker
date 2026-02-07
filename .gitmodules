@@ -1,4 +1,4 @@
 [submodule "Typo.js"]
 	path = Typo.js
 	url = https://github.com/Goober5000/Typo.js.git
-	branch = claude_hybrid_optimization
+	branch = claude_refactor
