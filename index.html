@@ -1333,7 +1333,7 @@
             
             // FreeSpace organization acronyms - always considered correct
             const freespaceOrgs = new Set([
-                'GTA', 'PVN', 'PVE', 'HOL', 'HoL', 'GTVA', 'GVTA', 'NTF', 'NTB', 'IFF', 'GTI', 'SOC', 'ISF'
+                'GTA', 'PVN', 'PVE', 'HOL', 'HoL', 'GTVA', 'GVTA', 'NTF', 'NTB', 'IFF', 'GTI', 'SOC', 'ISF', 'GTVI', 'GVTI', 'ETAK', 'BETAC'
             ]);
             
             // FreeSpace-specific words not in standard dictionary
@@ -1342,7 +1342,17 @@
                 'wingmen',        // plural of wingman
                 'nav',            // navigation
                 'comm',           // communications (singular)
-                'comms'           // communications (plural)
+                'comms',          // communications (plural)
+                'waypoint',
+                'waypoints',
+                'rendezvous',
+                'rendez-vous',
+                'loadout',
+                'Neo-Terra',
+                'Zod',
+                'zod',
+                'Zods',
+                'zods'
             ]);
             
             // Zodiac signs with common misspellings - these should always be corrected
@@ -1358,13 +1368,17 @@
                 'sagittarius': 'Sagittarius', 'saggitarius': 'Sagittarius', 'sagitarius': 'Sagittarius',
                 'capricorn': 'Capricorn', 'capricorne': 'Capricorn',
                 'aquarius': 'Aquarius', 'aquarias': 'Aquarius',
-                'pisces': 'Pisces', 'piscies': 'Pisces'
-            };
+                'pisces': 'Pisces', 'piscies': 'Pisces',
+                'pegasi': 'Pegasi',
+                'aquilae': 'Aquilae', 'aquilea': 'Aquilae', 'Aquilea': 'Aquilae',
+                'serpentis': 'Serpentis'
+           };
             
             // FreeSpace species - these should always be capitalized (singular and plural)
             const speciesCorrections = {
                 'terran': 'Terran',
                 'terrans': 'Terrans',
+                'vasuda': 'Vasuda',     // but not Terra, e.g. in "terra firma"
                 'vasudan': 'Vasudan',
                 'vasudans': 'Vasudans',
                 'shivan': 'Shivan',
@@ -1377,8 +1391,17 @@
                 'alright': 'all right',
                 'alot': 'a lot',
                 'infact': 'in fact',
+                'inflight': 'in-flight',
                 'enroute': 'en route',
-                'turrent': 'turret'
+                'turrent': 'turret',
+                'redesignated': 're-designated',
+                'torpedos': 'torpedoes',
+                'battlestations': 'battle stations',
+                'hud': 'HUD',
+                'aquire': 'acquire',
+                'aquired': 'acquired',
+                'aquiring': 'acquiring',
+                'thats': 'that\'s'
             };
             
             // Helper function to check if a period is after an abbreviation
@@ -1583,7 +1606,7 @@
                     }
                 }
                 
-                // Check if this word is a zodiac sign misspelling (case-insensitive)
+                // Check if this word is a star or zodiac sign misspelling (case-insensitive)
                 const lowerWord = word.toLowerCase();
                 if (zodiacCorrections[lowerWord]) {
                     const correctZodiac = zodiacCorrections[lowerWord];
@@ -1639,8 +1662,7 @@
                                 original: word,
                                 suggestion: suggestion,
                                 index: words[i].index,
-                                length: word.length,
-                                isZodiac: false
+                                length: word.length
                             });
                         } else {
                             // Capitalized word that's misspelled - likely a proper noun
@@ -1656,7 +1678,7 @@
             for (const change of wordChanges) {
                 let changeNote;
                 if (change.isZodiac) {
-                    changeNote = `${change.original} → ${change.suggestion} (zodiac sign)`;
+                    changeNote = `${change.original} → ${change.suggestion} (Zodiac sign or star)`;
                 } else if (change.isSpecies) {
                     changeNote = `${change.original} → ${change.suggestion} (species name)`;
                 } else {
@@ -1750,7 +1772,7 @@
         function toTitleCase(str) {
             const lowerCaseWords = new Set([
                 'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'from', 'in', 'into',
-                'nor', 'of', 'on', 'or', 'over', 'the', 'to', 'up', 'with', 'via'
+                'nor', 'of', 'on', 'or', 'the', 'to', 'up', 'with', 'via'
             ]);
             
             const words = str.split(/\s+/);
