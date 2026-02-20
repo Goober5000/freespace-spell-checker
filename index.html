@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeSpace Spell Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .setup-section {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .setup-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .setup-instructions {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .setup-instructions a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .setup-instructions a:hover {
+            text-decoration: underline;
+        }
+
+        .setup-instructions code {
+            background: #f0f2ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        details {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        details summary {
+            outline: none;
+            user-select: none;
+        }
+
+        details summary:hover {
+            color: #764ba2;
+        }
+
+        .file-upload-group {
+            margin-bottom: 20px;
+        }
+
+        .file-upload-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .upload-section {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .upload-section.drag-over {
+            border-color: #764ba2;
+            background: #e8ebff;
+        }
+
+        .upload-section.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        label:has(input:disabled) {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .file-status {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .grammar-issues, .corrections-section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .grammar-item {
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .correction-item {
+            padding: 10px;
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .correction-item.reverted {
+            background: #e9ecef;
+            border-left-color: #6c757d;
+            opacity: 0.65;
+        }
+        .correction-item.reverted .item-text,
+        .correction-item.reverted .item-note {
+            color: #6c757d !important;
+        }
+
+        .correction-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .correction-checkbox input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .revert-badge {
+            display: none;
+            font-size: 11px;
+            color: #fff;
+            background: #6c757d;
+            border-radius: 3px;
+            padding: 1px 6px;
+        }
+        .correction-item.reverted .revert-badge {
+            display: inline-block;
+        }
+
+        .master-checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .master-checkbox-row input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .master-checkbox-row label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .item-text {
+            font-family: monospace;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .item-note {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .summary-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .download-all {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 FreeSpace Spell Checker</h1>
+            <p>Powered by Typo.js • XSTR() processing • Supports Windows-1252 and UTF-8 • Spelling corrections • Grammar recommendations</p>
+        </div>
+
+        <div class="content">
+            <div class="setup-section">
+                <div class="setup-title">📚 Step 1: Load Dictionary</div>
+                
+                <!-- Language Selector -->
+                <div style="margin-bottom: 20px;">
+                    <label class="file-upload-label" for="languageSelect">Select Language:</label>
+                    <select id="languageSelect" style="padding: 8px 12px; border: 2px solid #e1e8ed; border-radius: 6px; font-size: 14px; cursor: pointer; width: 300px; max-width: 100%;">
+                        <optgroup label="English">
+                            <option value="en_US" selected>English (US)</option>
+                            <option value="en_GB">English (UK)</option>
+                            <option value="en_CA">English (Canada)</option>
+                            <option value="en_AU">English (Australia)</option>
+                            <option value="en_ZA">English (South Africa)</option>
+                        </optgroup>
+                        <optgroup label="Other Languages">
+                            <option value="de_DE">German (Germany)</option>
+                            <option value="es_ES">Spanish (Spain)</option>
+                            <option value="fr_FR">French (France)</option>
+                            <option value="it_IT">Italian (Italy)</option>
+                            <option value="pt_BR">Portuguese (Brazil)</option>
+                            <option value="pl_PL">Polish (Poland)</option>
+                            <option value="ru_RU">Russian (Russia)</option>
+                        </optgroup>
+                        <optgroup label="Custom">
+                            <option value="custom">Custom/Other Language</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="setup-instructions" id="dictionaryInstructions">
+                    Download the dictionary files from the <a href="https://github.com/LibreOffice/dictionaries" target="_blank" id="dictionaryRepoLink">LibreOffice dictionaries repository</a>:
+                    <ul style="margin: 10px 0 10px 20px;" id="dictionaryFileList">
+                        <li><code id="affFileName">en_US.aff</code> - Affix rules file</li>
+                        <li><code id="dicFileName">en_US.dic</code> - Dictionary file</li>
+                    </ul>
+                </div>
+                
+                <div id="customDictionaryUpload" style="display: none;">
+                    <div class="file-upload-group">
+                        <label class="file-upload-label" id="affLabel">.aff file (affix rules):</label>
+                        <input type="file" id="affFileInput" accept=".aff">
+                        <span id="affStatus"></span>
+                    </div>
+
+                    <div class="file-upload-group">
+                        <label class="file-upload-label" id="dicLabel">.dic file (dictionary):</label>
+                        <input type="file" id="dicFileInput" accept=".dic">
+                        <span id="dicStatus"></span>
+                    </div>
+                </div>
+
+                <div id="dictionaryStatus"></div>
+            </div>
+
+            <div id="uploadArea">
+                <div class="upload-section" id="uploadSection">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drop files here or click to browse</h3>
+                    <p style="margin: 10px 0; color: #6c757d;">Supports .fs2 mission files and .tbl/.tbm table files</p>
+                    <input type="file" id="fileInput" class="file-input" multiple accept=".fs2,.tbl,.tbm,.txt">
+                    <button class="btn" id="selectBtn">Select Files</button>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <label style="display: inline-flex; align-items: center; cursor: pointer; font-size: 14px; margin-bottom: 8px;">
+                        <input type="checkbox" id="twoSpacesAfterSentence" style="margin-right: 8px; cursor: pointer;">
+                        <span>Use two spaces after sentences (default is one space)</span>
+                    </label><br>
+                    <label style="display: inline-flex; align-items: center; cursor: pointer; font-size: 14px;">
+                        <input type="checkbox" id="useOriginalFilenames" style="margin-right: 8px; cursor: pointer;">
+                        <span>Save with original filenames (default adds "_corrected" suffix)</span>
+                    </label>
+                </div>
+
+                <div id="fileListContainer" class="hidden">
+                    <h3 style="margin-bottom: 15px;">Selected Files:</h3>
+                    <div class="file-list" id="fileList"></div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn" id="processBtn">Process Files</button>
+                        <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+                    </div>
+                </div>
+
+                <div id="processingContainer" class="hidden" style="margin-top: 20px;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p id="processingStatus">Processing files...</p>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="resultsContainer" class="hidden" style="margin-top: 20px;">
+                    <div class="summary-card">
+                        <div class="summary-title">✅ Processing Complete</div>
+                        <div class="summary-stats">
+                            <div class="summary-stat">
+                                <div class="summary-stat-value" id="totalFiles">0</div>
+                                <div class="summary-stat-label">Files Processed</div>
+                            </div>
+                            <div class="summary-stat">
+                                <div class="summary-stat-value" id="totalCorrections">0</div>
+                                <div class="summary-stat-label">Total Corrections</div>
+                            </div>
+                            <div class="summary-stat">
+                                <div class="summary-stat-value" id="totalGrammar">0</div>
+                                <div class="summary-stat-label">Grammar Issues</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <label style="display: inline-flex; align-items: center; cursor: pointer; font-size: 14px;">
+                                <input type="checkbox" id="showAllItems" style="margin-right: 8px; cursor: pointer;">
+                                <span>Show all items in lists (default shows first 15 corrections, first 20 grammar issues)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="results-section" id="results"></div>
+
+                    <div class="download-all">
+                        <button class="btn" id="downloadAllBtn">Download All Corrected Files</button>
+                        <button class="btn btn-secondary" id="processMoreBtn">Process More Files</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Written by Goober5000 and Claude • <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>
+    </div>
+
+    <script src="Typo.js/typo/typo.js"></script>
+    <script src="spell-checker.js"></script>
+</body>
+</html>
