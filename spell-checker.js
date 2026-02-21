@@ -734,57 +734,72 @@ function spellCheckString(str, twoSpaces) {
         'zods'
     ]);
     
-    // Zodiac signs with common misspellings - these should always be corrected
-    const zodiacCorrections = {
-        'aries': 'Aries',
-        'taurus': 'Taurus', 'tauras': 'Taurus', 'tauros': 'Taurus',
-        'gemini': 'Gemini', 'geminii': 'Gemini',
-        'cancer': 'Cancer',
-        'leo': 'Leo',
-        'virgo': 'Virgo',
-        'libra': 'Libra', 'libre': 'Libra',
-        'scorpio': 'Scorpio', 'scorpius': 'Scorpio',
-        'sagittarius': 'Sagittarius', 'saggitarius': 'Sagittarius', 'sagitarius': 'Sagittarius',
-        'capricorn': 'Capricorn', 'capricorne': 'Capricorn',
-        'aquarius': 'Aquarius', 'aquarias': 'Aquarius',
-        'pisces': 'Pisces', 'piscies': 'Pisces',
-        'pegasi': 'Pegasi',
-        'aquilae': 'Aquilae', 'aquilea': 'Aquilae', 'Aquilea': 'Aquilae',
-        'serpentis': 'Serpentis'
-   };
-    
-    // FreeSpace species - these should always be capitalized (singular and plural)
-    const speciesCorrections = {
-        'terran': 'Terran',
-        'terrans': 'Terrans',
-        'vasuda': 'Vasuda',     // but not Terra, e.g. in "terra firma"
-        'vasudan': 'Vasudan',
-        'vasudans': 'Vasudans',
-        'shivan': 'Shivan',
-        'shivans': 'Shivans',
-        'ancients': 'Ancients'  // plural only - "ancient" is a common adjective
+    const customCorrections = {
+        // Zodiac signs with common misspellings - these should always be corrected
+        'Zodiac sign': {
+            anyCase: false,
+            'aries': 'Aries',
+            'taurus': 'Taurus', 'tauras': 'Taurus', 'tauros': 'Taurus',
+            'gemini': 'Gemini', 'geminii': 'Gemini',
+            'cancer': 'Cancer',
+            'leo': 'Leo',
+            'virgo': 'Virgo',
+            'libra': 'Libra', 'libre': 'Libra',
+            'scorpio': 'Scorpio', 'scorpius': 'Scorpio',
+            'sagittarius': 'Sagittarius', 'saggitarius': 'Sagittarius', 'sagitarius': 'Sagittarius',
+            'capricorn': 'Capricorn', 'capricorne': 'Capricorn',
+            'aquarius': 'Aquarius', 'aquarias': 'Aquarius',
+            'pisces': 'Pisces', 'piscies': 'Pisces'
+        },
+        'star': {
+            anyCase: false,
+            'pegasi': 'Pegasi',
+            'aquilae': 'Aquilae', 'aquilea': 'Aquilae',
+            'serpentis': 'Serpentis'
+        },
+        // FreeSpace species - these should always be capitalized (singular and plural)
+        'species name': {
+            anyCase: false,
+            'terran': 'Terran',
+            'terrans': 'Terrans',
+            'vasuda': 'Vasuda',     // but not Terra, e.g. in "terra firma"
+            'vasudan': 'Vasudan',
+            'vasudans': 'Vasudans',
+            'shivan': 'Shivan',
+            'shivans': 'Shivans',
+            'ancients': 'Ancients'  // plural only - "ancient" is a common adjective
+        },
+        'custom': {
+            anyCase: true,
+            omitTag: true,
+            'alright': 'all right',
+            'alot': 'a lot',
+            'infact': 'in fact',
+            'inflight': 'in-flight',
+            'enroute': 'en route',
+            'turrent': 'turret',
+            'redesignated': 're-designated',
+            'torpedos': 'torpedoes',
+            'battlestations': 'battle stations',
+            'hud': 'HUD',
+            'aquire': 'acquire',
+            'aquired': 'acquired',
+            'aquiring': 'acquiring',
+            'thats': 'that\'s'
+        }
     };
     
-    // Common word corrections applied before spell checking
-    const commonCorrections = {
-        'alright': 'all right',
-        'alot': 'a lot',
-        'infact': 'in fact',
-        'inflight': 'in-flight',
-        'enroute': 'en route',
-        'turrent': 'turret',
-        'redesignated': 're-designated',
-        'torpedos': 'torpedoes',
-        'battlestations': 'battle stations',
-        'hud': 'HUD',
-        'aquire': 'acquire',
-        'aquired': 'acquired',
-        'aquiring': 'acquiring',
-        'thats': 'that\'s'
-    };
+    // Abbreviation capitalization corrections - built from the abbreviations set.
+    // Maps each abbreviation's lowercase form to its correct capitalized form
+    // (e.g. 'dr' → 'Dr', 'cmdr' → 'Cmdr').
+    const abbreviationCorrections = {};
+    for (const abbr of abbreviations) {
+        abbreviationCorrections[abbr.toLowerCase()] = abbr;
+    }
+    customCorrections['abbreviation'] = abbreviationCorrections;
     
-    // Helper function to check if a period is after an abbreviation
-    function isAbbreviation(text, periodIndex) {
+    // Helper function to check if an abbreviation is before a period
+    function isAbbreviationBeforePeriod(text, periodIndex) {
         // Look backward to find the word before the period
         let wordStart = periodIndex - 1;
         while (wordStart >= 0 && /[a-zA-Z]/.test(text[wordStart])) {
@@ -813,7 +828,6 @@ function spellCheckString(str, twoSpaces) {
     }
     
     // 2. Handle multiple spaces and sentence spacing
-    
     if (twoSpaces) {
         // Two spaces after sentences mode
         // First, consolidate 3+ spaces to single space
@@ -834,7 +848,7 @@ function spellCheckString(str, twoSpaces) {
                 // Check if next character after space is uppercase or start of new sentence
                 if (i + 2 < corrected.length && /[A-Z"]/.test(corrected[i + 2])) {
                     // Check this isn't an abbreviation
-                    if (corrected[i] === '.' && !isAbbreviation(corrected, i)) {
+                    if (corrected[i] === '.' && !isAbbreviationBeforePeriod(corrected, i)) {
                         newCorrected += ' '; // Add second space
                         singleSpaceCount++;
                     }
@@ -913,7 +927,7 @@ function spellCheckString(str, twoSpaces) {
         }
     }
     
-    // Rule 2: Spell check individual words
+    // Spell check individual words
     // Use regex to properly tokenize words, including $ variables and contractions
     // IMPORTANT: Tokenize the corrected string (after space corrections) so indices match
     const wordRegex = /\$?\w+('\w+)?/g;
@@ -928,6 +942,7 @@ function spellCheckString(str, twoSpaces) {
     
     let wordChanges = [];
     
+outerWordLoop:
     for (let i = 0; i < words.length; i++) {
         const word = words[i].text;
         
@@ -985,35 +1000,26 @@ function spellCheckString(str, twoSpaces) {
             }
         }
         
-        // Check if this word is a star or zodiac sign misspelling (case-insensitive)
+        // Check if this word is in one of our custom lists
         const lowerWord = word.toLowerCase();
-        if (zodiacCorrections[lowerWord]) {
-            const correctZodiac = zodiacCorrections[lowerWord];
-            if (word !== correctZodiac) {
-                wordChanges.push({
-                    original: word,
-                    suggestion: correctZodiac,
-                    index: words[i].index,
-                    length: word.length,
-                    isZodiac: true
-                });
+        for (const [customTag, customMap] of Object.entries(customCorrections)) {
+            if (customMap.anyCase) {
+                // TODO
+            } else {
+                if (customMap[lowerWord]) {
+                    const correctCustom = customMap[lowerWord];
+                    if (word !== correctCustom) {
+                        wordChanges.push({
+                            original: word,
+                            suggestion: correctCustom,
+                            index: words[i].index,
+                            length: word.length,
+                            customTag: customMap.omitTag ? undefined : customTag
+                        });
+                    }
+                    continue outerWordLoop; // Skip normal spell checking for this word (whether corrected or not)
+                }
             }
-            continue; // Skip normal spell checking for all zodiac signs (whether corrected or not)
-        }
-        
-        // Check if this word is a FreeSpace species (case-insensitive)
-        if (speciesCorrections[lowerWord]) {
-            const correctSpecies = speciesCorrections[lowerWord];
-            if (word !== correctSpecies) {
-                wordChanges.push({
-                    original: word,
-                    suggestion: correctSpecies,
-                    index: words[i].index,
-                    length: word.length,
-                    isSpecies: true
-                });
-            }
-            continue; // Skip normal spell checking for all species names (whether corrected or not)
         }
         
         // Skip words that start with a capital letter (likely proper nouns)
@@ -1056,10 +1062,8 @@ function spellCheckString(str, twoSpaces) {
     wordChanges.sort((a, b) => b.index - a.index);
     for (const change of wordChanges) {
         let changeNote;
-        if (change.isZodiac) {
-            changeNote = `${change.original} → ${change.suggestion} (Zodiac sign or star)`;
-        } else if (change.isSpecies) {
-            changeNote = `${change.original} → ${change.suggestion} (species name)`;
+        if (change.customTag) {
+            changeNote = `${change.original} → ${change.suggestion} (${change.customTag})`;
         } else {
             changeNote = `${change.original} → ${change.suggestion}`;
         }
@@ -1071,7 +1075,7 @@ function spellCheckString(str, twoSpaces) {
                    corrected.substring(change.index + change.length);
     }
     
-    // Rule 3: Grammar checks (report only, don't fix)
+    // Grammar checks (report only, don't fix)
     
     // Check for potential its/it's confusion (bidirectional)
     for (let i = 0; i < words.length - 1; i++) {
