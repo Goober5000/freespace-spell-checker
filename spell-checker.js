@@ -769,7 +769,12 @@ function spellCheckString(str, twoSpaces) {
             'shivans': 'Shivans',
             'ancients': 'Ancients'  // plural only - "ancient" is a common adjective
         },
-        'custom': {
+        'customFixedCase': {
+            anyCase: false,
+            omitTag: true,
+            'hud': 'HUD'
+        },
+        'customAnyCase': {
             anyCase: true,
             omitTag: true,
             'alright': 'all right',
@@ -781,7 +786,6 @@ function spellCheckString(str, twoSpaces) {
             'redesignated': 're-designated',
             'torpedos': 'torpedoes',
             'battlestations': 'battle stations',
-            'hud': 'HUD',
             'aquire': 'acquire',
             'aquired': 'acquired',
             'aquiring': 'acquiring',
@@ -896,37 +900,6 @@ function spellCheckString(str, twoSpaces) {
         changes.push(...spaceChanges);
     }
     
-    // Rule 1: Apply common word corrections
-    // Use tokenized words to find and replace common mistakes
-    // IMPORTANT: Tokenize the corrected string (after space corrections) so indices match
-    for (const [wrongWord, correctWord] of Object.entries(commonCorrections)) {
-        const wordRegex = /\$?\w+('\w+)?/g;
-        const matches = [];
-        let match;
-        
-        while ((match = wordRegex.exec(corrected)) !== null) {
-            if (match[0].toLowerCase() === wrongWord) {
-                matches.push({
-                    text: match[0],
-                    index: match.index
-                });
-            }
-        }
-        
-        if (matches.length > 0) {
-            // Apply replacements in reverse order to preserve indices
-            matches.reverse();
-            for (const m of matches) {
-                // Preserve capitalization: if original starts with uppercase, capitalize replacement
-                const replacement = m.text[0] === m.text[0].toUpperCase() 
-                    ? correctWord.charAt(0).toUpperCase() + correctWord.slice(1)
-                    : correctWord;
-                corrected = corrected.substring(0, m.index) + replacement + corrected.substring(m.index + m.text.length);
-            }
-            changes.push(`${wrongWord} → ${correctWord}`);
-        }
-    }
-    
     // Spell check individual words
     // Use regex to properly tokenize words, including $ variables and contractions
     // IMPORTANT: Tokenize the corrected string (after space corrections) so indices match
@@ -1004,7 +977,24 @@ outerWordLoop:
         const lowerWord = word.toLowerCase();
         for (const [customTag, customMap] of Object.entries(customCorrections)) {
             if (customMap.anyCase) {
-                // TODO
+                if (customMap[lowerWord]) {
+                    const correctCustom = customMap[lowerWord];
+                    // Preserve capitalization: if the original word starts with an uppercase
+                    // letter, capitalize the first letter of the replacement as well
+                    const suggestion = /^[A-Z]/.test(word)
+                        ? correctCustom.charAt(0).toUpperCase() + correctCustom.slice(1)
+                        : correctCustom;
+                    if (word !== suggestion) {
+                        wordChanges.push({
+                            original: word,
+                            suggestion: suggestion,
+                            index: words[i].index,
+                            length: word.length,
+                            customTag: customMap.omitTag ? undefined : customTag
+                        });
+                    }
+                    continue outerWordLoop;
+                }
             } else {
                 if (customMap[lowerWord]) {
                     const correctCustom = customMap[lowerWord];
