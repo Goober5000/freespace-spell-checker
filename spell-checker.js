@@ -698,6 +698,15 @@ const freespaceTokens = [
     { token: '$slash',     placeholder: '\uE002' }
 ];
 
+// Curly quote characters and their straight equivalents.
+// Defined at module scope so both spellCheckString and highlightCorrections can use it.
+const curlyQuoteMap = [
+    { curly: '\u2018', straight: "'", name: 'left single'  },  // '
+    { curly: '\u2019', straight: "'", name: 'right single' },  // '
+    { curly: '\u201C', straight: '"', name: 'left double'  },  // "
+    { curly: '\u201D', straight: '"', name: 'right double' },  // "
+];
+
 function spellCheckString(str, twoSpaces) {
     let corrected = str;
     const changes = [];
@@ -824,12 +833,6 @@ function spellCheckString(str, twoSpaces) {
     // Curly quote corrections - applied BEFORE spell checking and tokenization
     // so that contractions with curly apostrophes (e.g. it\u2019s) are
     // normalized to straight quotes before the word regex runs.
-    const curlyQuoteMap = [
-        { curly: '\u2018', straight: "'", name: 'left single'  },  // '
-        { curly: '\u2019', straight: "'", name: 'right single' },  // '
-        { curly: '\u201C', straight: '"', name: 'left double'  },  // "
-        { curly: '\u201D', straight: '"', name: 'right double' },  // "
-    ];
     let curlyQuoteCount = 0;
     for (const { curly, straight } of curlyQuoteMap) {
         const matches = corrected.split(curly);
@@ -1260,7 +1263,9 @@ function highlightCorrections(text, changes) {
         // escapeHtml does not touch curly quote characters, so they are still
         // present verbatim in the "before" text and can be matched directly.
         if (change.includes('curly quote')) {
-            highlighted = highlighted.replace(/[\u2018\u2019\u201C\u201D]/g,
+            const curlyChars = curlyQuoteMap.map(({ curly }) => curly).join('');
+            const curlyRegex = new RegExp(`[${curlyChars}]`, 'g');
+            highlighted = highlighted.replace(curlyRegex,
                 match => `<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;">${match}</mark>`);
         }
     }
