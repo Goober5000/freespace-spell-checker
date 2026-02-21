@@ -1255,6 +1255,14 @@ function highlightCorrections(text, changes) {
             highlighted = highlighted.replace(/([\.\?!]) ([A-Z]|&quot;)/g, 
                 '$1<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;"> </mark>$2');
         }
+        
+        // "Replaced X curly quote(s) with straight quotes"
+        // escapeHtml does not touch curly quote characters, so they are still
+        // present verbatim in the "before" text and can be matched directly.
+        if (change.includes('curly quote')) {
+            highlighted = highlighted.replace(/[\u2018\u2019\u201C\u201D]/g,
+                match => `<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;">${match}</mark>`);
+        }
     }
     
     // Restore FreeSpace tokens from PUA placeholders
