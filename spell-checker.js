@@ -820,7 +820,28 @@ function spellCheckString(str, twoSpaces) {
     for (const { token, placeholder } of freespaceTokens) {
         corrected = corrected.split(token).join(placeholder);
     }
-    
+
+    // Curly quote corrections - applied BEFORE spell checking and tokenization
+    // so that contractions with curly apostrophes (e.g. it\u2019s) are
+    // normalized to straight quotes before the word regex runs.
+    const curlyQuoteMap = [
+        { curly: '\u2018', straight: "'", name: 'left single'  },  // '
+        { curly: '\u2019', straight: "'", name: 'right single' },  // '
+        { curly: '\u201C', straight: '"', name: 'left double'  },  // "
+        { curly: '\u201D', straight: '"', name: 'right double' },  // "
+    ];
+    let curlyQuoteCount = 0;
+    for (const { curly, straight } of curlyQuoteMap) {
+        const matches = corrected.split(curly);
+        if (matches.length > 1) {
+            curlyQuoteCount += matches.length - 1;
+            corrected = matches.join(straight);
+        }
+    }
+    if (curlyQuoteCount > 0) {
+        changes.push(`Replaced ${curlyQuoteCount} curly quote(s) with straight quotes`);
+    }
+
     // Space corrections - applied BEFORE spell checking
     let spaceChanges = [];
     
