@@ -1,0 +1,9 @@
+{
+  "compoundRules": [],
+  "compoundRuleCodes": {},
+  "flags": {
+    "SET": "UTF-8",
+    "TRY": "иаоентрвсйлпкыьямдушзбгчщюжцхфэъАКСВПМГБЛТДНИОРФЭЕХЧУЗШЯЮЦЖЙЩ"
+  },
+  "replacementTable": []
+}

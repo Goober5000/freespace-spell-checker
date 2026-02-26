@@ -1,0 +1,2245 @@
+{
+  "version": 1,
+  "language": "de_DE",
+  "totalWords": 1385173,
+  "partitionCount": 559,
+  "bloomFilterSize": 13851730,
+  "partitions": {
+    "_#": {
+      "file": "words/_#.json",
+      "count": 1
+    },
+    "-a": {
+      "file": "words/-a.json",
+      "count": 27863
+    },
+    "-b": {
+      "file": "words/-b.json",
+      "count": 22887
+    },
+    "-c": {
+      "file": "words/-c.json",
+      "count": 5966
+    },
+    "-d": {
+      "file": "words/-d.json",
+      "count": 16490
+    },
+    "-e": {
+      "file": "words/-e.json",
+      "count": 19716
+    },
+    "-f": {
+      "file": "words/-f.json",
+      "count": 22262
+    },
+    "-g": {
+      "file": "words/-g.json",
+      "count": 23127
+    },
+    "-h": {
+      "file": "words/-h.json",
+      "count": 19385
+    },
+    "-i": {
+      "file": "words/-i.json",
+      "count": 10036
+    },
+    "-j": {
+      "file": "words/-j.json",
+      "count": 3957
+    },
+    "-k": {
+      "file": "words/-k.json",
+      "count": 35158
+    },
+    "-l": {
+      "file": "words/-l.json",
+      "count": 16827
+    },
+    "-m": {
+      "file": "words/-m.json",
+      "count": 26854
+    },
+    "-n": {
+      "file": "words/-n.json",
+      "count": 13069
+    },
+    "-o": {
+      "file": "words/-o.json",
+      "count": 5387
+    },
+    "-p": {
+      "file": "words/-p.json",
+      "count": 29645
+    },
+    "-q": {
+      "file": "words/-q.json",
+      "count": 1594
+    },
+    "-r": {
+      "file": "words/-r.json",
+      "count": 21284
+    },
+    "-s": {
+      "file": "words/-s.json",
+      "count": 50396
+    },
+    "-t": {
+      "file": "words/-t.json",
+      "count": 20337
+    },
+    "-u": {
+      "file": "words/-u.json",
+      "count": 6705
+    },
+    "-v": {
+      "file": "words/-v.json",
+      "count": 17227
+    },
+    "-w": {
+      "file": "words/-w.json",
+      "count": 11813
+    },
+    "-x": {
+      "file": "words/-x.json",
+      "count": 176
+    },
+    "-y": {
+      "file": "words/-y.json",
+      "count": 206
+    },
+    "-z": {
+      "file": "words/-z.json",
+      "count": 10792
+    },
+    "-�": {
+      "file": "words/-�.json",
+      "count": 1250
+    },
+    "ab": {
+      "file": "words/ab.json",
+      "count": 16715
+    },
+    "ac": {
+      "file": "words/ac.json",
+      "count": 1307
+    },
+    "ad": {
+      "file": "words/ad.json",
+      "count": 1408
+    },
+    "ae": {
+      "file": "words/ae.json",
+      "count": 122
+    },
+    "ag": {
+      "file": "words/ag.json",
+      "count": 786
+    },
+    "ai": {
+      "file": "words/ai.json",
+      "count": 141
+    },
+    "ak": {
+      "file": "words/ak.json",
+      "count": 1582
+    },
+    "am": {
+      "file": "words/am.json",
+      "count": 1675
+    },
+    "an": {
+      "file": "words/an.json",
+      "count": 18750
+    },
+    "ao": {
+      "file": "words/ao.json",
+      "count": 15
+    },
+    "ap": {
+      "file": "words/ap.json",
+      "count": 1176
+    },
+    "ar": {
+      "file": "words/ar.json",
+      "count": 3316
+    },
+    "as": {
+      "file": "words/as.json",
+      "count": 1495
+    },
+    "at": {
+      "file": "words/at.json",
+      "count": 1023
+    },
+    "aa": {
+      "file": "words/aa.json",
+      "count": 346
+    },
+    "af": {
+      "file": "words/af.json",
+      "count": 461
+    },
+    "ah": {
+      "file": "words/ah.json",
+      "count": 217
+    },
+    "aj": {
+      "file": "words/aj.json",
+      "count": 7
+    },
+    "al": {
+      "file": "words/al.json",
+      "count": 5034
+    },
+    "aq": {
+      "file": "words/aq.json",
+      "count": 232
+    },
+    "au": {
+      "file": "words/au.json",
+      "count": 29428
+    },
+    "av": {
+      "file": "words/av.json",
+      "count": 153
+    },
+    "aw": {
+      "file": "words/aw.json",
+      "count": 30
+    },
+    "ax": {
+      "file": "words/ax.json",
+      "count": 169
+    },
+    "ay": {
+      "file": "words/ay.json",
+      "count": 28
+    },
+    "az": {
+      "file": "words/az.json",
+      "count": 169
+    },
+    "ba": {
+      "file": "words/ba.json",
+      "count": 5466
+    },
+    "bb": {
+      "file": "words/bb.json",
+      "count": 4
+    },
+    "bd": {
+      "file": "words/bd.json",
+      "count": 5
+    },
+    "bg": {
+      "file": "words/bg.json",
+      "count": 5
+    },
+    "bh": {
+      "file": "words/bh.json",
+      "count": 32
+    },
+    "bi": {
+      "file": "words/bi.json",
+      "count": 4234
+    },
+    "bk": {
+      "file": "words/bk.json",
+      "count": 1
+    },
+    "bl": {
+      "file": "words/bl.json",
+      "count": 3389
+    },
+    "bm": {
+      "file": "words/bm.json",
+      "count": 2
+    },
+    "bn": {
+      "file": "words/bn.json",
+      "count": 2
+    },
+    "bp": {
+      "file": "words/bp.json",
+      "count": 3
+    },
+    "br": {
+      "file": "words/br.json",
+      "count": 4627
+    },
+    "bs": {
+      "file": "words/bs.json",
+      "count": 16
+    },
+    "bt": {
+      "file": "words/bt.json",
+      "count": 2
+    },
+    "bv": {
+      "file": "words/bv.json",
+      "count": 5
+    },
+    "bw": {
+      "file": "words/bw.json",
+      "count": 1
+    },
+    "be": {
+      "file": "words/be.json",
+      "count": 23671
+    },
+    "bf": {
+      "file": "words/bf.json",
+      "count": 2
+    },
+    "bj": {
+      "file": "words/bj.json",
+      "count": 2
+    },
+    "bo": {
+      "file": "words/bo.json",
+      "count": 2704
+    },
+    "bu": {
+      "file": "words/bu.json",
+      "count": 2597
+    },
+    "by": {
+      "file": "words/by.json",
+      "count": 95
+    },
+    "b�": {
+      "file": "words/b�.json",
+      "count": 2012
+    },
+    "ca": {
+      "file": "words/ca.json",
+      "count": 1366
+    },
+    "cd": {
+      "file": "words/cd.json",
+      "count": 13
+    },
+    "ch": {
+      "file": "words/ch.json",
+      "count": 3837
+    },
+    "ci": {
+      "file": "words/ci.json",
+      "count": 177
+    },
+    "cn": {
+      "file": "words/cn.json",
+      "count": 1
+    },
+    "cp": {
+      "file": "words/cp.json",
+      "count": 2
+    },
+    "cs": {
+      "file": "words/cs.json",
+      "count": 4
+    },
+    "ce": {
+      "file": "words/ce.json",
+      "count": 296
+    },
+    "cl": {
+      "file": "words/cl.json",
+      "count": 419
+    },
+    "cm": {
+      "file": "words/cm.json",
+      "count": 3
+    },
+    "co": {
+      "file": "words/co.json",
+      "count": 1430
+    },
+    "cr": {
+      "file": "words/cr.json",
+      "count": 279
+    },
+    "ct": {
+      "file": "words/ct.json",
+      "count": 1
+    },
+    "cu": {
+      "file": "words/cu.json",
+      "count": 248
+    },
+    "cy": {
+      "file": "words/cy.json",
+      "count": 268
+    },
+    "cz": {
+      "file": "words/cz.json",
+      "count": 1
+    },
+    "c�": {
+      "file": "words/c�.json",
+      "count": 184
+    },
+    "da": {
+      "file": "words/da.json",
+      "count": 6337
+    },
+    "db": {
+      "file": "words/db.json",
+      "count": 2
+    },
+    "dd": {
+      "file": "words/dd.json",
+      "count": 6
+    },
+    "de": {
+      "file": "words/de.json",
+      "count": 8138
+    },
+    "df": {
+      "file": "words/df.json",
+      "count": 3
+    },
+    "dg": {
+      "file": "words/dg.json",
+      "count": 4
+    },
+    "dh": {
+      "file": "words/dh.json",
+      "count": 8
+    },
+    "di": {
+      "file": "words/di.json",
+      "count": 7027
+    },
+    "dk": {
+      "file": "words/dk.json",
+      "count": 1
+    },
+    "dl": {
+      "file": "words/dl.json",
+      "count": 2
+    },
+    "dn": {
+      "file": "words/dn.json",
+      "count": 15
+    },
+    "do": {
+      "file": "words/do.json",
+      "count": 3073
+    },
+    "dp": {
+      "file": "words/dp.json",
+      "count": 4
+    },
+    "dr": {
+      "file": "words/dr.json",
+      "count": 4287
+    },
+    "ds": {
+      "file": "words/ds.json",
+      "count": 54
+    },
+    "dt": {
+      "file": "words/dt.json",
+      "count": 4
+    },
+    "dv": {
+      "file": "words/dv.json",
+      "count": 2
+    },
+    "dj": {
+      "file": "words/dj.json",
+      "count": 10
+    },
+    "du": {
+      "file": "words/du.json",
+      "count": 7475
+    },
+    "dy": {
+      "file": "words/dy.json",
+      "count": 252
+    },
+    "d�": {
+      "file": "words/d�.json",
+      "count": 1287
+    },
+    "ea": {
+      "file": "words/ea.json",
+      "count": 5
+    },
+    "ed": {
+      "file": "words/ed.json",
+      "count": 391
+    },
+    "ee": {
+      "file": "words/ee.json",
+      "count": 2
+    },
+    "ef": {
+      "file": "words/ef.json",
+      "count": 345
+    },
+    "eg": {
+      "file": "words/eg.json",
+      "count": 161
+    },
+    "eh": {
+      "file": "words/eh.json",
+      "count": 612
+    },
+    "ek": {
+      "file": "words/ek.json",
+      "count": 204
+    },
+    "em": {
+      "file": "words/em.json",
+      "count": 1981
+    },
+    "ep": {
+      "file": "words/ep.json",
+      "count": 827
+    },
+    "es": {
+      "file": "words/es.json",
+      "count": 815
+    },
+    "et": {
+      "file": "words/et.json",
+      "count": 617
+    },
+    "eu": {
+      "file": "words/eu.json",
+      "count": 821
+    },
+    "ew": {
+      "file": "words/ew.json",
+      "count": 80
+    },
+    "ez": {
+      "file": "words/ez.json",
+      "count": 9
+    },
+    "eb": {
+      "file": "words/eb.json",
+      "count": 301
+    },
+    "ec": {
+      "file": "words/ec.json",
+      "count": 375
+    },
+    "ei": {
+      "file": "words/ei.json",
+      "count": 16685
+    },
+    "ej": {
+      "file": "words/ej.json",
+      "count": 45
+    },
+    "el": {
+      "file": "words/el.json",
+      "count": 2458
+    },
+    "en": {
+      "file": "words/en.json",
+      "count": 10420
+    },
+    "eo": {
+      "file": "words/eo.json",
+      "count": 19
+    },
+    "eq": {
+      "file": "words/eq.json",
+      "count": 32
+    },
+    "er": {
+      "file": "words/er.json",
+      "count": 11952
+    },
+    "ev": {
+      "file": "words/ev.json",
+      "count": 682
+    },
+    "ex": {
+      "file": "words/ex.json",
+      "count": 3396
+    },
+    "ey": {
+      "file": "words/ey.json",
+      "count": 9
+    },
+    "e�": {
+      "file": "words/e�.json",
+      "count": 2
+    },
+    "fa": {
+      "file": "words/fa.json",
+      "count": 6220
+    },
+    "fb": {
+      "file": "words/fb.json",
+      "count": 1
+    },
+    "fc": {
+      "file": "words/fc.json",
+      "count": 3
+    },
+    "fd": {
+      "file": "words/fd.json",
+      "count": 3
+    },
+    "ff": {
+      "file": "words/ff.json",
+      "count": 3
+    },
+    "fg": {
+      "file": "words/fg.json",
+      "count": 1
+    },
+    "fk": {
+      "file": "words/fk.json",
+      "count": 2
+    },
+    "fl": {
+      "file": "words/fl.json",
+      "count": 5855
+    },
+    "fe": {
+      "file": "words/fe.json",
+      "count": 6813
+    },
+    "fi": {
+      "file": "words/fi.json",
+      "count": 3420
+    },
+    "fj": {
+      "file": "words/fj.json",
+      "count": 58
+    },
+    "fo": {
+      "file": "words/fo.json",
+      "count": 5363
+    },
+    "fr": {
+      "file": "words/fr.json",
+      "count": 7620
+    },
+    "fu": {
+      "file": "words/fu.json",
+      "count": 2710
+    },
+    "f�": {
+      "file": "words/f�.json",
+      "count": 3169
+    },
+    "ga": {
+      "file": "words/ga.json",
+      "count": 4096
+    },
+    "gb": {
+      "file": "words/gb.json",
+      "count": 6
+    },
+    "ge": {
+      "file": "words/ge.json",
+      "count": 26296
+    },
+    "gh": {
+      "file": "words/gh.json",
+      "count": 137
+    },
+    "gi": {
+      "file": "words/gi.json",
+      "count": 1326
+    },
+    "gm": {
+      "file": "words/gm.json",
+      "count": 14
+    },
+    "go": {
+      "file": "words/go.json",
+      "count": 1670
+    },
+    "gp": {
+      "file": "words/gp.json",
+      "count": 2
+    },
+    "gt": {
+      "file": "words/gt.json",
+      "count": 3
+    },
+    "gu": {
+      "file": "words/gu.json",
+      "count": 1431
+    },
+    "gw": {
+      "file": "words/gw.json",
+      "count": 3
+    },
+    "gd": {
+      "file": "words/gd.json",
+      "count": 1
+    },
+    "gl": {
+      "file": "words/gl.json",
+      "count": 4242
+    },
+    "gn": {
+      "file": "words/gn.json",
+      "count": 310
+    },
+    "gr": {
+      "file": "words/gr.json",
+      "count": 7870
+    },
+    "gs": {
+      "file": "words/gs.json",
+      "count": 3
+    },
+    "gy": {
+      "file": "words/gy.json",
+      "count": 292
+    },
+    "g�": {
+      "file": "words/g�.json",
+      "count": 1082
+    },
+    "hc": {
+      "file": "words/hc.json",
+      "count": 1
+    },
+    "hi": {
+      "file": "words/hi.json",
+      "count": 16064
+    },
+    "hp": {
+      "file": "words/hp.json",
+      "count": 3
+    },
+    "hr": {
+      "file": "words/hr.json",
+      "count": 7
+    },
+    "ht": {
+      "file": "words/ht.json",
+      "count": 2
+    },
+    "hw": {
+      "file": "words/hw.json",
+      "count": 4
+    },
+    "ha": {
+      "file": "words/ha.json",
+      "count": 8453
+    },
+    "hb": {
+      "file": "words/hb.json",
+      "count": 1
+    },
+    "hd": {
+      "file": "words/hd.json",
+      "count": 1
+    },
+    "he": {
+      "file": "words/he.json",
+      "count": 26560
+    },
+    "ho": {
+      "file": "words/ho.json",
+      "count": 7434
+    },
+    "hu": {
+      "file": "words/hu.json",
+      "count": 1920
+    },
+    "hv": {
+      "file": "words/hv.json",
+      "count": 2
+    },
+    "hy": {
+      "file": "words/hy.json",
+      "count": 2040
+    },
+    "hz": {
+      "file": "words/hz.json",
+      "count": 1
+    },
+    "h�": {
+      "file": "words/h�.json",
+      "count": 3118
+    },
+    "ia": {
+      "file": "words/ia.json",
+      "count": 10
+    },
+    "ib": {
+      "file": "words/ib.json",
+      "count": 72
+    },
+    "ic": {
+      "file": "words/ic.json",
+      "count": 87
+    },
+    "id": {
+      "file": "words/id.json",
+      "count": 653
+    },
+    "if": {
+      "file": "words/if.json",
+      "count": 7
+    },
+    "ig": {
+      "file": "words/ig.json",
+      "count": 237
+    },
+    "ih": {
+      "file": "words/ih.json",
+      "count": 35
+    },
+    "ii": {
+      "file": "words/ii.json",
+      "count": 2
+    },
+    "ij": {
+      "file": "words/ij.json",
+      "count": 14
+    },
+    "il": {
+      "file": "words/il.json",
+      "count": 425
+    },
+    "im": {
+      "file": "words/im.json",
+      "count": 1724
+    },
+    "ip": {
+      "file": "words/ip.json",
+      "count": 23
+    },
+    "iq": {
+      "file": "words/iq.json",
+      "count": 2
+    },
+    "ir": {
+      "file": "words/ir.json",
+      "count": 901
+    },
+    "is": {
+      "file": "words/is.json",
+      "count": 1184
+    },
+    "it": {
+      "file": "words/it.json",
+      "count": 415
+    },
+    "iv": {
+      "file": "words/iv.json",
+      "count": 25
+    },
+    "iw": {
+      "file": "words/iw.json",
+      "count": 9
+    },
+    "ix": {
+      "file": "words/ix.json",
+      "count": 1
+    },
+    "ik": {
+      "file": "words/ik.json",
+      "count": 130
+    },
+    "in": {
+      "file": "words/in.json",
+      "count": 12402
+    },
+    "io": {
+      "file": "words/io.json",
+      "count": 227
+    },
+    "iz": {
+      "file": "words/iz.json",
+      "count": 4
+    },
+    "ja": {
+      "file": "words/ja.json",
+      "count": 1472
+    },
+    "je": {
+      "file": "words/je.json",
+      "count": 727
+    },
+    "jg": {
+      "file": "words/jg.json",
+      "count": 1
+    },
+    "jh": {
+      "file": "words/jh.json",
+      "count": 3
+    },
+    "ji": {
+      "file": "words/ji.json",
+      "count": 17
+    },
+    "jo": {
+      "file": "words/jo.json",
+      "count": 1221
+    },
+    "ju": {
+      "file": "words/ju.json",
+      "count": 2070
+    },
+    "j�": {
+      "file": "words/j�.json",
+      "count": 296
+    },
+    "kb": {
+      "file": "words/kb.json",
+      "count": 4
+    },
+    "kd": {
+      "file": "words/kd.json",
+      "count": 2
+    },
+    "kf": {
+      "file": "words/kf.json",
+      "count": 4
+    },
+    "kg": {
+      "file": "words/kg.json",
+      "count": 6
+    },
+    "kl": {
+      "file": "words/kl.json",
+      "count": 5258
+    },
+    "kp": {
+      "file": "words/kp.json",
+      "count": 7
+    },
+    "ks": {
+      "file": "words/ks.json",
+      "count": 1
+    },
+    "ku": {
+      "file": "words/ku.json",
+      "count": 4372
+    },
+    "kw": {
+      "file": "words/kw.json",
+      "count": 3
+    },
+    "kz": {
+      "file": "words/kz.json",
+      "count": 2
+    },
+    "ka": {
+      "file": "words/ka.json",
+      "count": 13750
+    },
+    "ke": {
+      "file": "words/ke.json",
+      "count": 2701
+    },
+    "kh": {
+      "file": "words/kh.json",
+      "count": 72
+    },
+    "ki": {
+      "file": "words/ki.json",
+      "count": 2811
+    },
+    "kn": {
+      "file": "words/kn.json",
+      "count": 2490
+    },
+    "ko": {
+      "file": "words/ko.json",
+      "count": 16234
+    },
+    "kr": {
+      "file": "words/kr.json",
+      "count": 8081
+    },
+    "ky": {
+      "file": "words/ky.json",
+      "count": 130
+    },
+    "k�": {
+      "file": "words/k�.json",
+      "count": 2494
+    },
+    "la": {
+      "file": "words/la.json",
+      "count": 7998
+    },
+    "lb": {
+      "file": "words/lb.json",
+      "count": 1
+    },
+    "lc": {
+      "file": "words/lc.json",
+      "count": 4
+    },
+    "ld": {
+      "file": "words/ld.json",
+      "count": 4
+    },
+    "le": {
+      "file": "words/le.json",
+      "count": 7897
+    },
+    "lg": {
+      "file": "words/lg.json",
+      "count": 2
+    },
+    "lk": {
+      "file": "words/lk.json",
+      "count": 7
+    },
+    "lp": {
+      "file": "words/lp.json",
+      "count": 2
+    },
+    "ls": {
+      "file": "words/ls.json",
+      "count": 14
+    },
+    "lv": {
+      "file": "words/lv.json",
+      "count": 1
+    },
+    "lz": {
+      "file": "words/lz.json",
+      "count": 1
+    },
+    "lf": {
+      "file": "words/lf.json",
+      "count": 2
+    },
+    "lh": {
+      "file": "words/lh.json",
+      "count": 2
+    },
+    "li": {
+      "file": "words/li.json",
+      "count": 5948
+    },
+    "lj": {
+      "file": "words/lj.json",
+      "count": 2
+    },
+    "ll": {
+      "file": "words/ll.json",
+      "count": 2
+    },
+    "lo": {
+      "file": "words/lo.json",
+      "count": 3790
+    },
+    "lt": {
+      "file": "words/lt.json",
+      "count": 2
+    },
+    "lu": {
+      "file": "words/lu.json",
+      "count": 1741
+    },
+    "lw": {
+      "file": "words/lw.json",
+      "count": 2
+    },
+    "ly": {
+      "file": "words/ly.json",
+      "count": 345
+    },
+    "l�": {
+      "file": "words/l�.json",
+      "count": 1975
+    },
+    "ma": {
+      "file": "words/ma.json",
+      "count": 12850
+    },
+    "mb": {
+      "file": "words/mb.json",
+      "count": 8
+    },
+    "md": {
+      "file": "words/md.json",
+      "count": 10
+    },
+    "mg": {
+      "file": "words/mg.json",
+      "count": 3
+    },
+    "mh": {
+      "file": "words/mh.json",
+      "count": 5
+    },
+    "mi": {
+      "file": "words/mi.json",
+      "count": 12074
+    },
+    "mp": {
+      "file": "words/mp.json",
+      "count": 2
+    },
+    "ms": {
+      "file": "words/ms.json",
+      "count": 4
+    },
+    "mv": {
+      "file": "words/mv.json",
+      "count": 3
+    },
+    "mw": {
+      "file": "words/mw.json",
+      "count": 2
+    },
+    "mc": {
+      "file": "words/mc.json",
+      "count": 4
+    },
+    "me": {
+      "file": "words/me.json",
+      "count": 8190
+    },
+    "mf": {
+      "file": "words/mf.json",
+      "count": 1
+    },
+    "mk": {
+      "file": "words/mk.json",
+      "count": 1
+    },
+    "mn": {
+      "file": "words/mn.json",
+      "count": 46
+    },
+    "mo": {
+      "file": "words/mo.json",
+      "count": 6546
+    },
+    "mr": {
+      "file": "words/mr.json",
+      "count": 3
+    },
+    "mt": {
+      "file": "words/mt.json",
+      "count": 2
+    },
+    "mu": {
+      "file": "words/mu.json",
+      "count": 2782
+    },
+    "my": {
+      "file": "words/my.json",
+      "count": 593
+    },
+    "m�": {
+      "file": "words/m�.json",
+      "count": 3124
+    },
+    "na": {
+      "file": "words/na.json",
+      "count": 11941
+    },
+    "nd": {
+      "file": "words/nd.json",
+      "count": 2
+    },
+    "ne": {
+      "file": "words/ne.json",
+      "count": 5553
+    },
+    "nf": {
+      "file": "words/nf.json",
+      "count": 1
+    },
+    "ng": {
+      "file": "words/ng.json",
+      "count": 2
+    },
+    "nk": {
+      "file": "words/nk.json",
+      "count": 1
+    },
+    "nl": {
+      "file": "words/nl.json",
+      "count": 1
+    },
+    "no": {
+      "file": "words/no.json",
+      "count": 3157
+    },
+    "np": {
+      "file": "words/np.json",
+      "count": 1
+    },
+    "nr": {
+      "file": "words/nr.json",
+      "count": 3
+    },
+    "ns": {
+      "file": "words/ns.json",
+      "count": 10
+    },
+    "nt": {
+      "file": "words/nt.json",
+      "count": 3
+    },
+    "nv": {
+      "file": "words/nv.json",
+      "count": 3
+    },
+    "ni": {
+      "file": "words/ni.json",
+      "count": 5653
+    },
+    "nu": {
+      "file": "words/nu.json",
+      "count": 1188
+    },
+    "ny": {
+      "file": "words/ny.json",
+      "count": 119
+    },
+    "n�": {
+      "file": "words/n�.json",
+      "count": 775
+    },
+    "oc": {
+      "file": "words/oc.json",
+      "count": 181
+    },
+    "oe": {
+      "file": "words/oe.json",
+      "count": 84
+    },
+    "ol": {
+      "file": "words/ol.json",
+      "count": 562
+    },
+    "op": {
+      "file": "words/op.json",
+      "count": 988
+    },
+    "or": {
+      "file": "words/or.json",
+      "count": 2327
+    },
+    "os": {
+      "file": "words/os.json",
+      "count": 1279
+    },
+    "ow": {
+      "file": "words/ow.json",
+      "count": 11
+    },
+    "oa": {
+      "file": "words/oa.json",
+      "count": 16
+    },
+    "ob": {
+      "file": "words/ob.json",
+      "count": 1731
+    },
+    "od": {
+      "file": "words/od.json",
+      "count": 206
+    },
+    "of": {
+      "file": "words/of.json",
+      "count": 642
+    },
+    "og": {
+      "file": "words/og.json",
+      "count": 25
+    },
+    "oh": {
+      "file": "words/oh.json",
+      "count": 150
+    },
+    "oi": {
+      "file": "words/oi.json",
+      "count": 2
+    },
+    "oj": {
+      "file": "words/oj.json",
+      "count": 1
+    },
+    "ok": {
+      "file": "words/ok.json",
+      "count": 473
+    },
+    "om": {
+      "file": "words/om.json",
+      "count": 129
+    },
+    "on": {
+      "file": "words/on.json",
+      "count": 184
+    },
+    "oo": {
+      "file": "words/oo.json",
+      "count": 12
+    },
+    "ot": {
+      "file": "words/ot.json",
+      "count": 106
+    },
+    "ou": {
+      "file": "words/ou.json",
+      "count": 93
+    },
+    "ov": {
+      "file": "words/ov.json",
+      "count": 133
+    },
+    "ox": {
+      "file": "words/ox.json",
+      "count": 423
+    },
+    "oz": {
+      "file": "words/oz.json",
+      "count": 112
+    },
+    "pc": {
+      "file": "words/pc.json",
+      "count": 3
+    },
+    "pd": {
+      "file": "words/pd.json",
+      "count": 15
+    },
+    "pe": {
+      "file": "words/pe.json",
+      "count": 4087
+    },
+    "pg": {
+      "file": "words/pg.json",
+      "count": 1
+    },
+    "ph": {
+      "file": "words/ph.json",
+      "count": 3472
+    },
+    "pi": {
+      "file": "words/pi.json",
+      "count": 2318
+    },
+    "pk": {
+      "file": "words/pk.json",
+      "count": 5
+    },
+    "pl": {
+      "file": "words/pl.json",
+      "count": 3753
+    },
+    "pp": {
+      "file": "words/pp.json",
+      "count": 3
+    },
+    "pr": {
+      "file": "words/pr.json",
+      "count": 11422
+    },
+    "ps": {
+      "file": "words/ps.json",
+      "count": 644
+    },
+    "pt": {
+      "file": "words/pt.json",
+      "count": 14
+    },
+    "pa": {
+      "file": "words/pa.json",
+      "count": 8615
+    },
+    "pf": {
+      "file": "words/pf.json",
+      "count": 2784
+    },
+    "pj": {
+      "file": "words/pj.json",
+      "count": 4
+    },
+    "pn": {
+      "file": "words/pn.json",
+      "count": 60
+    },
+    "po": {
+      "file": "words/po.json",
+      "count": 5952
+    },
+    "pu": {
+      "file": "words/pu.json",
+      "count": 2194
+    },
+    "py": {
+      "file": "words/py.json",
+      "count": 653
+    },
+    "p�": {
+      "file": "words/p�.json",
+      "count": 430
+    },
+    "qi": {
+      "file": "words/qi.json",
+      "count": 2
+    },
+    "qu": {
+      "file": "words/qu.json",
+      "count": 2741
+    },
+    "ra": {
+      "file": "words/ra.json",
+      "count": 5571
+    },
+    "rb": {
+      "file": "words/rb.json",
+      "count": 5
+    },
+    "rf": {
+      "file": "words/rf.json",
+      "count": 2
+    },
+    "ri": {
+      "file": "words/ri.json",
+      "count": 2763
+    },
+    "rm": {
+      "file": "words/rm.json",
+      "count": 2
+    },
+    "rn": {
+      "file": "words/rn.json",
+      "count": 2
+    },
+    "ro": {
+      "file": "words/ro.json",
+      "count": 3107
+    },
+    "rp": {
+      "file": "words/rp.json",
+      "count": 1
+    },
+    "rs": {
+      "file": "words/rs.json",
+      "count": 1
+    },
+    "rt": {
+      "file": "words/rt.json",
+      "count": 3
+    },
+    "rw": {
+      "file": "words/rw.json",
+      "count": 2
+    },
+    "re": {
+      "file": "words/re.json",
+      "count": 17388
+    },
+    "rh": {
+      "file": "words/rh.json",
+      "count": 776
+    },
+    "ru": {
+      "file": "words/ru.json",
+      "count": 2706
+    },
+    "ry": {
+      "file": "words/ry.json",
+      "count": 5
+    },
+    "r�": {
+      "file": "words/r�.json",
+      "count": 3878
+    },
+    "sa": {
+      "file": "words/sa.json",
+      "count": 6692
+    },
+    "sc": {
+      "file": "words/sc.json",
+      "count": 24702
+    },
+    "sd": {
+      "file": "words/sd.json",
+      "count": 8
+    },
+    "se": {
+      "file": "words/se.json",
+      "count": 8697
+    },
+    "sf": {
+      "file": "words/sf.json",
+      "count": 4
+    },
+    "sg": {
+      "file": "words/sg.json",
+      "count": 5
+    },
+    "sh": {
+      "file": "words/sh.json",
+      "count": 265
+    },
+    "sm": {
+      "file": "words/sm.json",
+      "count": 99
+    },
+    "so": {
+      "file": "words/so.json",
+      "count": 3900
+    },
+    "sp": {
+      "file": "words/sp.json",
+      "count": 8208
+    },
+    "sq": {
+      "file": "words/sq.json",
+      "count": 11
+    },
+    "ss": {
+      "file": "words/ss.json",
+      "count": 48
+    },
+    "su": {
+      "file": "words/su.json",
+      "count": 3289
+    },
+    "sv": {
+      "file": "words/sv.json",
+      "count": 21
+    },
+    "sw": {
+      "file": "words/sw.json",
+      "count": 105
+    },
+    "si": {
+      "file": "words/si.json",
+      "count": 5635
+    },
+    "sk": {
+      "file": "words/sk.json",
+      "count": 1381
+    },
+    "sl": {
+      "file": "words/sl.json",
+      "count": 440
+    },
+    "sn": {
+      "file": "words/sn.json",
+      "count": 79
+    },
+    "sr": {
+      "file": "words/sr.json",
+      "count": 5
+    },
+    "st": {
+      "file": "words/st.json",
+      "count": 18946
+    },
+    "sy": {
+      "file": "words/sy.json",
+      "count": 1782
+    },
+    "sz": {
+      "file": "words/sz.json",
+      "count": 232
+    },
+    "s�": {
+      "file": "words/s�.json",
+      "count": 2664
+    },
+    "tb": {
+      "file": "words/tb.json",
+      "count": 2
+    },
+    "tc": {
+      "file": "words/tc.json",
+      "count": 3
+    },
+    "tf": {
+      "file": "words/tf.json",
+      "count": 1
+    },
+    "tn": {
+      "file": "words/tn.json",
+      "count": 1
+    },
+    "tu": {
+      "file": "words/tu.json",
+      "count": 1809
+    },
+    "tv": {
+      "file": "words/tv.json",
+      "count": 3
+    },
+    "tw": {
+      "file": "words/tw.json",
+      "count": 34
+    },
+    "ta": {
+      "file": "words/ta.json",
+      "count": 4942
+    },
+    "td": {
+      "file": "words/td.json",
+      "count": 1
+    },
+    "te": {
+      "file": "words/te.json",
+      "count": 6007
+    },
+    "th": {
+      "file": "words/th.json",
+      "count": 2270
+    },
+    "ti": {
+      "file": "words/ti.json",
+      "count": 2481
+    },
+    "tj": {
+      "file": "words/tj.json",
+      "count": 3
+    },
+    "tl": {
+      "file": "words/tl.json",
+      "count": 4
+    },
+    "to": {
+      "file": "words/to.json",
+      "count": 3647
+    },
+    "tr": {
+      "file": "words/tr.json",
+      "count": 9242
+    },
+    "ts": {
+      "file": "words/ts.json",
+      "count": 210
+    },
+    "ty": {
+      "file": "words/ty.json",
+      "count": 687
+    },
+    "tz": {
+      "file": "words/tz.json",
+      "count": 1
+    },
+    "t�": {
+      "file": "words/t�.json",
+      "count": 1401
+    },
+    "ua": {
+      "file": "words/ua.json",
+      "count": 4
+    },
+    "uf": {
+      "file": "words/uf.json",
+      "count": 69
+    },
+    "uk": {
+      "file": "words/uk.json",
+      "count": 50
+    },
+    "um": {
+      "file": "words/um.json",
+      "count": 8362
+    },
+    "un": {
+      "file": "words/un.json",
+      "count": 18732
+    },
+    "ur": {
+      "file": "words/ur.json",
+      "count": 1792
+    },
+    "us": {
+      "file": "words/us.json",
+      "count": 145
+    },
+    "uv": {
+      "file": "words/uv.json",
+      "count": 1
+    },
+    "ub": {
+      "file": "words/ub.json",
+      "count": 41
+    },
+    "uc": {
+      "file": "words/uc.json",
+      "count": 13
+    },
+    "ud": {
+      "file": "words/ud.json",
+      "count": 16
+    },
+    "ue": {
+      "file": "words/ue.json",
+      "count": 32
+    },
+    "ug": {
+      "file": "words/ug.json",
+      "count": 18
+    },
+    "uh": {
+      "file": "words/uh.json",
+      "count": 270
+    },
+    "ui": {
+      "file": "words/ui.json",
+      "count": 12
+    },
+    "ul": {
+      "file": "words/ul.json",
+      "count": 318
+    },
+    "up": {
+      "file": "words/up.json",
+      "count": 47
+    },
+    "ut": {
+      "file": "words/ut.json",
+      "count": 102
+    },
+    "uw": {
+      "file": "words/uw.json",
+      "count": 2
+    },
+    "vd": {
+      "file": "words/vd.json",
+      "count": 3
+    },
+    "vg": {
+      "file": "words/vg.json",
+      "count": 2
+    },
+    "vh": {
+      "file": "words/vh.json",
+      "count": 1
+    },
+    "vi": {
+      "file": "words/vi.json",
+      "count": 3456
+    },
+    "vl": {
+      "file": "words/vl.json",
+      "count": 28
+    },
+    "vm": {
+      "file": "words/vm.json",
+      "count": 6
+    },
+    "vp": {
+      "file": "words/vp.json",
+      "count": 1
+    },
+    "vw": {
+      "file": "words/vw.json",
+      "count": 6
+    },
+    "va": {
+      "file": "words/va.json",
+      "count": 1513
+    },
+    "ve": {
+      "file": "words/ve.json",
+      "count": 31160
+    },
+    "vf": {
+      "file": "words/vf.json",
+      "count": 3
+    },
+    "vk": {
+      "file": "words/vk.json",
+      "count": 1
+    },
+    "vo": {
+      "file": "words/vo.json",
+      "count": 11378
+    },
+    "vr": {
+      "file": "words/vr.json",
+      "count": 7
+    },
+    "vu": {
+      "file": "words/vu.json",
+      "count": 245
+    },
+    "v�": {
+      "file": "words/v�.json",
+      "count": 241
+    },
+    "wc": {
+      "file": "words/wc.json",
+      "count": 2
+    },
+    "wd": {
+      "file": "words/wd.json",
+      "count": 1
+    },
+    "wh": {
+      "file": "words/wh.json",
+      "count": 53
+    },
+    "wl": {
+      "file": "words/wl.json",
+      "count": 5
+    },
+    "wm": {
+      "file": "words/wm.json",
+      "count": 1
+    },
+    "wa": {
+      "file": "words/wa.json",
+      "count": 6027
+    },
+    "we": {
+      "file": "words/we.json",
+      "count": 13116
+    },
+    "wi": {
+      "file": "words/wi.json",
+      "count": 7797
+    },
+    "wo": {
+      "file": "words/wo.json",
+      "count": 2158
+    },
+    "wr": {
+      "file": "words/wr.json",
+      "count": 81
+    },
+    "wu": {
+      "file": "words/wu.json",
+      "count": 1132
+    },
+    "wy": {
+      "file": "words/wy.json",
+      "count": 20
+    },
+    "w�": {
+      "file": "words/w�.json",
+      "count": 1491
+    },
+    "xi": {
+      "file": "words/xi.json",
+      "count": 13
+    },
+    "xm": {
+      "file": "words/xm.json",
+      "count": 1
+    },
+    "xp": {
+      "file": "words/xp.json",
+      "count": 1
+    },
+    "xa": {
+      "file": "words/xa.json",
+      "count": 27
+    },
+    "xe": {
+      "file": "words/xe.json",
+      "count": 201
+    },
+    "xh": {
+      "file": "words/xh.json",
+      "count": 1
+    },
+    "xo": {
+      "file": "words/xo.json",
+      "count": 2
+    },
+    "xy": {
+      "file": "words/xy.json",
+      "count": 68
+    },
+    "ya": {
+      "file": "words/ya.json",
+      "count": 78
+    },
+    "yb": {
+      "file": "words/yb.json",
+      "count": 1
+    },
+    "ye": {
+      "file": "words/ye.json",
+      "count": 11
+    },
+    "yi": {
+      "file": "words/yi.json",
+      "count": 1
+    },
+    "yl": {
+      "file": "words/yl.json",
+      "count": 8
+    },
+    "yo": {
+      "file": "words/yo.json",
+      "count": 68
+    },
+    "yp": {
+      "file": "words/yp.json",
+      "count": 6
+    },
+    "ys": {
+      "file": "words/ys.json",
+      "count": 2
+    },
+    "yt": {
+      "file": "words/yt.json",
+      "count": 44
+    },
+    "yu": {
+      "file": "words/yu.json",
+      "count": 50
+    },
+    "yv": {
+      "file": "words/yv.json",
+      "count": 7
+    },
+    "zd": {
+      "file": "words/zd.json",
+      "count": 2
+    },
+    "zk": {
+      "file": "words/zk.json",
+      "count": 1
+    },
+    "za": {
+      "file": "words/za.json",
+      "count": 1332
+    },
+    "ze": {
+      "file": "words/ze.json",
+      "count": 6674
+    },
+    "zg": {
+      "file": "words/zg.json",
+      "count": 8
+    },
+    "zh": {
+      "file": "words/zh.json",
+      "count": 2
+    },
+    "zi": {
+      "file": "words/zi.json",
+      "count": 2953
+    },
+    "zo": {
+      "file": "words/zo.json",
+      "count": 780
+    },
+    "zs": {
+      "file": "words/zs.json",
+      "count": 11
+    },
+    "zu": {
+      "file": "words/zu.json",
+      "count": 16309
+    },
+    "zw": {
+      "file": "words/zw.json",
+      "count": 4239
+    },
+    "zy": {
+      "file": "words/zy.json",
+      "count": 562
+    },
+    "z�": {
+      "file": "words/z�.json",
+      "count": 974
+    },
+    "_a": {
+      "file": "words/_a.json",
+      "count": 1
+    },
+    "a�": {
+      "file": "words/a�.json",
+      "count": 4
+    },
+    "_b": {
+      "file": "words/_b.json",
+      "count": 1
+    },
+    "bz": {
+      "file": "words/bz.json",
+      "count": 2
+    },
+    "_c": {
+      "file": "words/_c.json",
+      "count": 1
+    },
+    "cg": {
+      "file": "words/cg.json",
+      "count": 1
+    },
+    "cf": {
+      "file": "words/cf.json",
+      "count": 1
+    },
+    "_d": {
+      "file": "words/_d.json",
+      "count": 1
+    },
+    "d'": {
+      "file": "words/d'.json",
+      "count": 6
+    },
+    "dc": {
+      "file": "words/dc.json",
+      "count": 1
+    },
+    "dm": {
+      "file": "words/dm.json",
+      "count": 1
+    },
+    "_e": {
+      "file": "words/_e.json",
+      "count": 1
+    },
+    "_f": {
+      "file": "words/_f.json",
+      "count": 1
+    },
+    "ft": {
+      "file": "words/ft.json",
+      "count": 1
+    },
+    "_g": {
+      "file": "words/_g.json",
+      "count": 1
+    },
+    "gg": {
+      "file": "words/gg.json",
+      "count": 3
+    },
+    "_h": {
+      "file": "words/_h.json",
+      "count": 1
+    },
+    "hl": {
+      "file": "words/hl.json",
+      "count": 1
+    },
+    "_i": {
+      "file": "words/_i.json",
+      "count": 1
+    },
+    "_j": {
+      "file": "words/_j.json",
+      "count": 1
+    },
+    "jm": {
+      "file": "words/jm.json",
+      "count": 3
+    },
+    "_k": {
+      "file": "words/_k.json",
+      "count": 1
+    },
+    "kj": {
+      "file": "words/kj.json",
+      "count": 1
+    },
+    "kv": {
+      "file": "words/kv.json",
+      "count": 1
+    },
+    "km": {
+      "file": "words/km.json",
+      "count": 1
+    },
+    "kt": {
+      "file": "words/kt.json",
+      "count": 1
+    },
+    "_l": {
+      "file": "words/_l.json",
+      "count": 1
+    },
+    "_m": {
+      "file": "words/_m.json",
+      "count": 1
+    },
+    "ml": {
+      "file": "words/ml.json",
+      "count": 1
+    },
+    "mm": {
+      "file": "words/mm.json",
+      "count": 3
+    },
+    "_n": {
+      "file": "words/_n.json",
+      "count": 1
+    },
+    "nm": {
+      "file": "words/nm.json",
+      "count": 1
+    },
+    "_o": {
+      "file": "words/_o.json",
+      "count": 1
+    },
+    "_p": {
+      "file": "words/_p.json",
+      "count": 1
+    },
+    "pm": {
+      "file": "words/pm.json",
+      "count": 1
+    },
+    "_q": {
+      "file": "words/_q.json",
+      "count": 1
+    },
+    "qm": {
+      "file": "words/qm.json",
+      "count": 2
+    },
+    "_r": {
+      "file": "words/_r.json",
+      "count": 1
+    },
+    "rr": {
+      "file": "words/rr.json",
+      "count": 2
+    },
+    "_s": {
+      "file": "words/_s.json",
+      "count": 1
+    },
+    "_t": {
+      "file": "words/_t.json",
+      "count": 1
+    },
+    "_u": {
+      "file": "words/_u.json",
+      "count": 1
+    },
+    "ux": {
+      "file": "words/ux.json",
+      "count": 6
+    },
+    "_v": {
+      "file": "words/_v.json",
+      "count": 1
+    },
+    "vs": {
+      "file": "words/vs.json",
+      "count": 1
+    },
+    "_w": {
+      "file": "words/_w.json",
+      "count": 1
+    },
+    "wg": {
+      "file": "words/wg.json",
+      "count": 1
+    },
+    "_x": {
+      "file": "words/_x.json",
+      "count": 1
+    },
+    "_y": {
+      "file": "words/_y.json",
+      "count": 1
+    },
+    "_z": {
+      "file": "words/_z.json",
+      "count": 1
+    },
+    "zz": {
+      "file": "words/zz.json",
+      "count": 1
+    },
+    "_�": {
+      "file": "words/_�.json",
+      "count": 1
+    },
+    "�t": {
+      "file": "words/�t.json",
+      "count": 151
+    },
+    "�b": {
+      "file": "words/�b.json",
+      "count": 6071
+    },
+    "�c": {
+      "file": "words/�c.json",
+      "count": 46
+    },
+    "�d": {
+      "file": "words/�d.json",
+      "count": 66
+    },
+    "�f": {
+      "file": "words/�f.json",
+      "count": 134
+    },
+    "�g": {
+      "file": "words/�g.json",
+      "count": 86
+    },
+    "�h": {
+      "file": "words/�h.json",
+      "count": 112
+    },
+    "�k": {
+      "file": "words/�k.json",
+      "count": 190
+    },
+    "�l": {
+      "file": "words/�l.json",
+      "count": 221
+    },
+    "�m": {
+      "file": "words/�m.json",
+      "count": 3
+    },
+    "�n": {
+      "file": "words/�n.json",
+      "count": 73
+    },
+    "�o": {
+      "file": "words/�o.json",
+      "count": 11
+    },
+    "�p": {
+      "file": "words/�p.json",
+      "count": 22
+    },
+    "�q": {
+      "file": "words/�q.json",
+      "count": 148
+    },
+    "�r": {
+      "file": "words/�r.json",
+      "count": 123
+    },
+    "�s": {
+      "file": "words/�s.json",
+      "count": 233
+    },
+    "�u": {
+      "file": "words/�u.json",
+      "count": 72
+    },
+    "�x": {
+      "file": "words/�x.json",
+      "count": 8
+    },
+    "�z": {
+      "file": "words/�z.json",
+      "count": 6
+    },
+    "��": {
+      "file": "words/��.json",
+      "count": 4
+    }
+  }
+}

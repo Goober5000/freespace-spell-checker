@@ -1,0 +1,92 @@
+{
+  "compoundRules": [],
+  "compoundRuleCodes": {},
+  "flags": {
+    "SET": "UTF-8",
+    "FLAG": "UTF-8",
+    "TRY": "aeroinsctldumpbgfvhzóíjáqéñxyúükwAEROINSCTLDUMPBGFVHZÓÍJÁQÉÑXYÚÜKW",
+    "MAP": "nñNÑ"
+  },
+  "replacementTable": [
+    [
+      "ás",
+      "az"
+    ],
+    [
+      "az",
+      "ás"
+    ],
+    [
+      "cc",
+      "x"
+    ],
+    [
+      "és",
+      "ez"
+    ],
+    [
+      "ez",
+      "és"
+    ],
+    [
+      "güe",
+      "hue"
+    ],
+    [
+      "güi",
+      "hui"
+    ],
+    [
+      "hue",
+      "güe"
+    ],
+    [
+      "hui",
+      "güi"
+    ],
+    [
+      "ís",
+      "iz"
+    ],
+    [
+      "ío",
+      "ido"
+    ],
+    [
+      "ke",
+      "que"
+    ],
+    [
+      "ki",
+      "qui"
+    ],
+    [
+      "ll",
+      "y"
+    ],
+    [
+      "mb",
+      "nv"
+    ],
+    [
+      "nv",
+      "mb"
+    ],
+    [
+      "seci",
+      "cesi"
+    ],
+    [
+      "x",
+      "cc"
+    ],
+    [
+      "y",
+      "ll"
+    ],
+    [
+      "vámonos",
+      "vayámonos"
+    ]
+  ]
+}
