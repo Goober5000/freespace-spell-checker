@@ -202,12 +202,12 @@ function tryAutoLoad() {
     document.getElementById('dictionaryStatus').innerHTML = 
         `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
 
-    console.log(`Loading pre-calculated dictionary: ${lang.code}`);
+    console.log(`Loading pre-parsed dictionary: ${lang.code}`);
 
     try {
         dictionary = new Typo(lang.code, null, null, {
-            preCalculated: true,
-            preCalculatedPath: './precalculated',
+            preParsed: true,
+            preParsedPath: './preparsed',
             asyncLoad: true,
             loadedCallback: function(typoInstance) {
                 // Guard against a stale callback arriving after the user has
@@ -217,7 +217,7 @@ function tryAutoLoad() {
                     return;
                 }
                 dictionary = typoInstance;
-                console.log(`✓ Pre-calculated dictionary loaded (${lang.code})`);
+                console.log(`✓ Pre-parsed dictionary loaded (${lang.code})`);
                 document.getElementById('dictionaryStatus').innerHTML =
                     `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission and table files.</div>`;
                 document.getElementById('uploadSection').classList.remove('disabled');
@@ -648,7 +648,8 @@ function spellCheckString(str, twoSpaces) {
         'Zod',
         'zod',
         'Zods',
-        'zods'
+        'zods',
+        'xaser'
     ]);
     
     const customCorrections = {
@@ -685,6 +686,18 @@ function spellCheckString(str, twoSpaces) {
             'shivan': 'Shivan',
             'shivans': 'Shivans',
             'ancients': 'Ancients'  // plural only - "ancient" is a common adjective
+        },
+        'company name': {
+            anyCase: false,
+            'triton dynamics': 'Triton Dynamics',
+            'subach-innes': 'Subach-Innes',
+            'han-ronald': 'Han-Ronald',
+            'rni systems': 'RNI Systems'
+        },
+        'weapon class': {
+            anyCase: false,
+            'subach': 'Subach',
+            'akheton': 'Akheton'
         },
         'customFixedCase': {
             anyCase: false,
