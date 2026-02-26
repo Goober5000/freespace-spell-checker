@@ -11,19 +11,19 @@ let dicData = null;
 
 // Language configuration - maps language codes to their file naming conventions
 const languageConfig = {
-    'en_US': { code: 'en_US' },
-    'en_GB': { code: 'en_GB' },
-    'en_CA': { code: 'en_CA' },
-    'en_AU': { code: 'en_AU' },
-    'en_ZA': { code: 'en_ZA' },
-    'de_DE': { code: 'de_DE' },
-    'es_ES': { code: 'es_ES' },
-    'fr_FR': { code: 'fr_FR' },
-    'it_IT': { code: 'it_IT' },
-    'pt_BR': { code: 'pt_BR' },
-    'pl_PL': { code: 'pl_PL' },
-    'ru_RU': { code: 'ru_RU' },
-    'custom': { code: 'custom' }
+    'en_US': { code: 'en_US', affFile: 'en_US.aff', dicFile: 'en_US.dic', path: 'dictionaries/en_US', repoPath: 'en' },
+    'en_GB': { code: 'en_GB', affFile: 'en_GB.aff', dicFile: 'en_GB.dic', path: 'dictionaries/en_GB', repoPath: 'en' },
+    'en_CA': { code: 'en_CA', affFile: 'en_CA.aff', dicFile: 'en_CA.dic', path: 'dictionaries/en_CA', repoPath: 'en' },
+    'en_AU': { code: 'en_AU', affFile: 'en_AU.aff', dicFile: 'en_AU.dic', path: 'dictionaries/en_AU', repoPath: 'en' },
+    'en_ZA': { code: 'en_ZA', affFile: 'en_ZA.aff', dicFile: 'en_ZA.dic', path: 'dictionaries/en_ZA', repoPath: 'en' },
+    'de_DE': { code: 'de_DE', affFile: 'de_DE.aff', dicFile: 'de_DE.dic', path: 'dictionaries/de_DE', repoPath: 'de' },
+    'es_ES': { code: 'es_ES', affFile: 'es_ES.aff', dicFile: 'es_ES.dic', path: 'dictionaries/es_ES', repoPath: 'es' },
+    'fr_FR': { code: 'fr_FR', affFile: 'fr_FR.aff', dicFile: 'fr_FR.dic', path: 'dictionaries/fr_FR', repoPath: 'fr_FR' },
+    'it_IT': { code: 'it_IT', affFile: 'it_IT.aff', dicFile: 'it_IT.dic', path: 'dictionaries/it_IT', repoPath: 'it_IT' },
+    'pt_BR': { code: 'pt_BR', affFile: 'pt_BR.aff', dicFile: 'pt_BR.dic', path: 'dictionaries/pt_BR', repoPath: 'pt_BR' },
+    'pl_PL': { code: 'pl_PL', affFile: 'pl_PL.aff', dicFile: 'pl_PL.dic', path: 'dictionaries/pl_PL', repoPath: 'pl_PL' },
+    'ru_RU': { code: 'ru_RU', affFile: 'ru_RU.aff', dicFile: 'ru_RU.dic', path: 'dictionaries/ru_RU', repoPath: 'ru_RU' },
+    'custom': { code: 'custom', affFile: 'custom.aff', dicFile: 'custom.dic', path: null, repoPath: null }
 };
 
 // Get selected language configuration
@@ -196,40 +196,98 @@ function tryAutoLoad() {
     const lang = getSelectedLanguage();
     
     if (lang.code === 'custom') {
-        return; // Custom languages use the traditional aff/dic upload path
+        return; // Custom languages don't auto-load
     }
     
     document.getElementById('dictionaryStatus').innerHTML = 
         `<div class="status-message status-info">⏳ Loading ${lang.code} dictionary...</div>`;
 
-    console.log(`Loading pre-calculated dictionary: ${lang.code}`);
-
-    try {
-        dictionary = new Typo(lang.code, null, null, {
-            preCalculated: true,
-            preCalculatedPath: './precalculated',
-            asyncLoad: true,
-            loadedCallback: function(typoInstance) {
-                // Guard against a stale callback arriving after the user has
-                // already switched to a different language
-                if (getSelectedLanguage().code !== lang.code) {
-                    console.log(`Ignoring stale callback for ${lang.code}`);
-                    return;
-                }
-                dictionary = typoInstance;
-                console.log(`✓ Pre-calculated dictionary loaded (${lang.code})`);
-                document.getElementById('dictionaryStatus').innerHTML =
-                    `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission and table files.</div>`;
-                document.getElementById('uploadSection').classList.remove('disabled');
-                document.getElementById('selectBtn').disabled = false;
+    // Use the approach that works: manually fetch files and pass to Typo
+    const dictionaryPath = './dictionaries';
+    
+    async function loadDictionary() {
+        try {
+            const affPath = `${dictionaryPath}/${lang.code}/${lang.affFile}`;
+            const dicPath = `${dictionaryPath}/${lang.code}/${lang.dicFile}`;
+            
+            console.log(`Loading dictionary: ${lang.code}`);
+            console.log(`Fetching: ${affPath}`);
+            const affResponse = await fetch(affPath);
+            
+            console.log(`Fetching: ${dicPath}`);
+            const dicResponse = await fetch(dicPath);
+            
+            if (!affResponse.ok || !dicResponse.ok) {
+                throw new Error(`Failed to fetch dictionary files (${affResponse.status}, ${dicResponse.status})`);
             }
-        });
-    } catch (error) {
-        console.error('Dictionary load error:', error);
-        const errorMessage = (error && error.message) ? error.message : String(error);
-        document.getElementById('dictionaryStatus').innerHTML =
-            `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(errorMessage)}</div>`;
+            
+            const affData = await affResponse.text();
+            let dicData = await dicResponse.text();
+            
+            console.log(`Dictionary files loaded: ${affData.length} bytes (aff), ${dicData.length} bytes (dic)`);
+            
+            // Validate the dictionary format
+            if (!affData || affData.length < 10) {
+                throw new Error('AFF file appears to be empty or corrupted');
+            }
+            if (!dicData || dicData.length < 10) {
+                throw new Error('DIC file appears to be empty or corrupted');
+            }
+            
+            // Log first few lines to diagnose format issues
+            const affFirstLines = affData.split('\n').slice(0, 5).join('\n');
+            const dicFirstLines = dicData.split('\n').slice(0, 5).join('\n');
+            console.log('AFF first lines:', affFirstLines);
+            console.log('DIC first lines:', dicFirstLines);
+            
+            // Check .aff file for issues
+            const affLines = affData.split('\n');
+            console.log(`AFF file has ${affLines.length} lines`);
+            
+            // Look for SET encoding declaration
+            const setLine = affLines.find(line => line.trim().startsWith('SET'));
+            if (setLine) {
+                console.log('Encoding declaration:', setLine);
+            } else {
+                console.warn('No SET encoding declaration found in .aff file');
+            }
+            
+            console.log('Creating Typo instance...');
+            
+            try {
+                dictionary = new Typo(lang.code, affData, dicData);
+                console.log(`✓ Dictionary loaded successfully (${lang.code})`);
+            } catch (typoError) {
+                console.error('Typo.js error:', typoError);
+                // Typo.js sometimes throws strings instead of Error objects
+                const errorMsg = typoError.message || typoError.toString() || 'Unknown error';
+                throw new Error(`Typo.js failed to parse dictionary: ${errorMsg}`);
+            }
+            
+            document.getElementById('dictionaryStatus').innerHTML = 
+                `<div class="status-message status-success">✓ Dictionary loaded (${lang.code})! You can now process mission and table files.</div>`;
+            document.getElementById('uploadSection').classList.remove('disabled');
+            document.getElementById('selectBtn').disabled = false;
+            
+        } catch (error) {
+            console.error('Dictionary load error:', error);
+            
+            // Handle both Error objects and string errors
+            let errorMessage = 'Unknown error';
+            if (error && error.message) {
+                errorMessage = error.message;
+            } else if (typeof error === 'string') {
+                errorMessage = error;
+            } else if (error) {
+                errorMessage = error.toString();
+            }
+            
+            document.getElementById('dictionaryStatus').innerHTML = 
+                `<div class="status-message status-error">❌ Failed to load ${lang.code} dictionary: ${escapeHtml(errorMessage)}</div>`;
+        }
     }
+    
+    loadDictionary();
 }
 
 document.getElementById('affFileInput').addEventListener('change', async (e) => {
