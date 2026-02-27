@@ -427,6 +427,12 @@ async function processFile(file) {
     const replacements = new Map();
     const twoSpaces = document.getElementById('twoSpacesAfterSentence').checked;
     
+    // Word-level cache: avoids redundant dictionary lookups for words that
+    // appear in multiple XSTR strings within the same file.  Mission files
+    // are highly repetitive (briefing, debriefing, messages often share
+    // vocabulary), so this can eliminate the majority of check/suggest calls.
+    const wordCache = new Map();  // word → { correct: boolean, suggestion: string|null }
+    
     for (let i = 0; i < xstrStrings.length; i++) {
         // Yield to the event loop periodically so the browser can repaint
         // and remain responsive during long spell-check runs
@@ -435,7 +441,7 @@ async function processFile(file) {
         }
         
         const original = xstrStrings[i].text;
-        const result = spellCheckString(original, twoSpaces);
+        const result = spellCheckString(original, twoSpaces, wordCache);
         
         if (result.corrected !== original) {
             replacements.set(i, result.corrected);
@@ -627,7 +633,7 @@ const curlyQuoteMap = [
     { curly: '\u201D', straight: '"', name: 'right double' },  // "
 ];
 
-function spellCheckString(str, twoSpaces) {
+function spellCheckString(str, twoSpaces, wordCache) {
     let corrected = str;
     const changes = [];
     const grammarIssues = [];
@@ -972,8 +978,14 @@ outerWordLoop:
         // Skip words that start with a capital letter (likely proper nouns)
         const isCapitalized = /^[A-Z]/.test(word[0]);
         
-        // Check if word is spelled correctly
-        if (!dictionary.check(word)) {
+        // Check if word is spelled correctly (with per-file caching)
+        let cached = wordCache ? wordCache.get(word) : undefined;
+        if (cached === undefined) {
+            cached = { correct: dictionary.check(word), suggestion: undefined };
+            if (wordCache) wordCache.set(word, cached);
+        }
+        
+        if (!cached.correct) {
             // Only auto-correct if:
             // 1. The word is all lowercase (not a proper noun)
             // 2. OR the word has mixed case that looks like a typo
@@ -985,12 +997,16 @@ outerWordLoop:
             
             if (!isCapitalized || hasWeirdMixedCase) {
                 // Auto-correct lowercase words and obvious typos
-                const suggestions = dictionary.suggest(word, 1);
+                // Compute suggestion only when needed, and cache it
+                if (cached.suggestion === undefined) {
+                    const suggestions = dictionary.suggest(word, 1);
+                    cached.suggestion = (suggestions && suggestions.length > 0) ? suggestions[0] : null;
+                }
                 
-                if (suggestions && suggestions.length > 0) {
+                if (cached.suggestion) {
                     wordChanges.push({
                         original: word,
-                        suggestion: suggestions[0],
+                        suggestion: cached.suggestion,
                         index: words[i].index,
                         length: word.length
                     });
