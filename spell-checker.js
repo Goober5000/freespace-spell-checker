@@ -425,10 +425,16 @@ async function processFile(file) {
     
     // Create replacement map
     const replacements = new Map();
+    const twoSpaces = document.getElementById('twoSpacesAfterSentence').checked;
     
     for (let i = 0; i < xstrStrings.length; i++) {
+        // Yield to the event loop periodically so the browser can repaint
+        // and remain responsive during long spell-check runs
+        if (i > 0 && i % 20 === 0) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+        }
+        
         const original = xstrStrings[i].text;
-        const twoSpaces = document.getElementById('twoSpacesAfterSentence').checked;
         const result = spellCheckString(original, twoSpaces);
         
         if (result.corrected !== original) {
