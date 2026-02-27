@@ -7,15 +7,17 @@ A specialized spell checker for FreeSpace mission and table files that uses the 
 This repository includes:
 
 - `index.html` - The main spell checker application
-- `Typo.js/` - Hybrid-optimized Typo.js library (git submodule with custom optimization)
-- `dictionaries/` - Dictionary files for 12 languages
+- `spell-checker.js` - Spell checking logic and UI code
+- `Typo.js/` - Enhanced Typo.js library (git submodule with pre-parsed dictionary support)
+- `preparsed/` - Pre-parsed dictionary files (one gzipped JSON per language)
+- `dictionaries/` - Source dictionary files for 12 languages (used to generate pre-parsed files)
+- `generate-preparsed-dict.js` - Node.js script to generate pre-parsed dictionaries from .aff/.dic files
+- `test-preparsed.js` - Node.js test script to verify pre-parsed dictionaries
 - `README.md` - This documentation
-- `download-dictionaries.sh` - Script to download/update dictionary files
-- `DICTIONARY_DOWNLOAD.md` - Manual download instructions for dictionaries
 
 ## Quick Start
 
-**For end users:** Just download `index.html` and the dictionary files for your language(s) from the [LibreOffice dictionaries repository](https://github.com/LibreOffice/dictionaries), then open `index.html` and upload your dictionaries.
+**For end users:** Visit the deployed version (see Setup below) and select your language. The pre-parsed dictionary loads automatically. Upload your mission files and click "Process Files."
 
 **For developers:** Clone this repository with submodules:
 ```bash
@@ -51,28 +53,35 @@ git clone --recurse-submodules [repository-url]
 - ✅ **Exhaustive display option** - toggle between truncated view (default) and showing all corrections/issues
 - ✅ **Selective correction revert** - each correction has a checkbox; uncheck to exclude it from the downloaded output (all-or-nothing per XSTR string)
 
-## Dictionary Support and Limitations
+## Dictionary Support
 
 **Supported Languages:**
 - English (5 variants): US, UK, Canada, Australia, South Africa  
 - German, Spanish, French, Portuguese (Brazil), Polish, Russian
-- Italian (full dictionary supported via hybrid optimization)
+- Italian (full dictionary supported via pre-parsed dictionaries)
 
-**Hybrid Dictionary Optimization:**
+**Pre-Parsed Dictionary System:**
 
-This tool uses an optimized version of Typo.js that employs a hybrid eager/lazy evaluation strategy. This allows large dictionaries with complex affix rules (like Italian, Russian, Polish) to work efficiently in browsers without memory issues.
+This tool uses an enhanced version of Typo.js that supports pre-parsed dictionaries. Instead of downloading raw .aff/.dic files and expanding affix rules in the browser (which can consume hundreds of megabytes of memory and take tens of seconds for complex languages), the dictionaries are pre-expanded offline into a single gzipped JSON file per language. At runtime, the browser fetches and decompresses this file, then builds a Map for O(1) word lookups — identical to the traditional Typo.js code path.
 
 **How it works:**
-- Simple affix rules (80% of lookups) are expanded immediately for instant performance
-- Complex affix rules (20% of lookups) are expanded on-demand and cached
-- Result: 90%+ memory savings for large dictionaries while maintaining fast lookups
+- The `generate-preparsed-dict.js` script loads traditional .aff/.dic files, expands all affix rules, and serializes the resulting word table as JSON
+- Unflagged words (the majority) are stored as a sorted string array; flagged words are stored as an object with their rule codes
+- The JSON is gzip-compressed at maximum level (typically 70–80% size reduction)
+- At runtime, the browser fetches the `.json.gz` file, decompresses it using the Compression Streams API, and populates the same `dictionaryTable` Map that traditional Typo.js builds
+- After loading, all spell checking methods (`check`, `checkExact`, `hasFlag`, `suggest`) work identically to traditional mode with no special code paths
 
-**Italian Dictionary:** The full Italian dictionary (95,381 words with 3,412 affix rules) is fully supported. Thanks to the hybrid optimization:
-- Memory usage: ~75MB (vs 800MB+ with naive expansion)
-- Load time: 3-5 seconds
-- Lookup performance: Instant for common words, 1-3ms first lookup for rare words (then cached)
+**Performance characteristics:**
 
-If you encounter "out of memory" errors with other very large dictionaries, you can create reduced versions using the included `create-lite-dictionaries.sh` script.
+| Language | Dictionary Entries | Compressed Size | Load Time |
+|----------|-------------------|----------------|-----------|
+| English (US) | 124K | ~0.3 MB | ~0.1s |
+| German | 1.39M | ~3 MB | ~1.2s |
+| Italian | 3.57M | ~7 MB | ~2.5s |
+
+The Italian dictionary was the original motivation for this system. With traditional .aff/.dic loading, the Italian dictionary's complex affix rules caused 800MB+ memory consumption and could freeze the browser for 10–30 seconds during expansion. Pre-parsed loading reduces this to ~50MB of memory and a 2.5-second fetch+decompress.
+
+**Custom Dictionaries:** Languages not in the dropdown can still be used by selecting "Custom/Other Language" and uploading .aff/.dic files directly. These use the traditional Typo.js loading path with in-browser affix expansion.
 
 ## Setup
 
@@ -107,21 +116,27 @@ If you need a language that's not in the dropdown:
 
 For developers working on this tool locally:
 
-1. Clone or download this repository with the dictionary files in the `dictionaries/` folder:
+1. Clone or download this repository:
    ```
    repository-root/
    ├── index.html
-   ├── Typo.js/          (submodule)
+   ├── spell-checker.js
+   ├── Typo.js/                (submodule)
    │   └── typo/
    │       └── typo.js
-   └── dictionaries/
-       ├── en_US/
-       │   ├── en_US.aff
-       │   └── en_US.dic
-       ├── en_GB/
-       │   ├── en_GB.aff
-       │   └── en_GB.dic
-       └── [other languages]/
+   ├── preparsed/
+   │   ├── en_US/
+   │   │   └── dictionary.json.gz
+   │   ├── it_IT/
+   │   │   └── dictionary.json.gz
+   │   └── [other languages]/
+   ├── dictionaries/
+   │   ├── en_US/
+   │   │   ├── en_US.aff
+   │   │   └── en_US.dic
+   │   └── [other languages]/
+   ├── generate-preparsed-dict.js
+   └── test-preparsed.js
    ```
 
 2. Start a local web server in the repository root:
@@ -136,6 +151,23 @@ For developers working on this tool locally:
 3. Open your browser to `http://localhost:8000/`
 
 4. Select your language from the dropdown - the dictionary will auto-load
+
+### Generating Pre-Parsed Dictionaries
+
+To regenerate pre-parsed dictionaries from source .aff/.dic files (e.g. after updating a dictionary):
+
+```bash
+# Install optional dependency for safe regex handling (recommended for Italian/complex dictionaries)
+npm install re2
+
+# Generate a pre-parsed dictionary
+node generate-preparsed-dict.js it_IT ./dictionaries ./preparsed
+
+# Test the generated dictionary
+node test-preparsed.js it_IT ./preparsed
+```
+
+The generation script expands all affix rules (which can take several minutes for large dictionaries like Italian), then writes a single `dictionary.json.gz` file. The test script loads the generated file synchronously in Node.js and runs basic check/suggest/hasFlag validation.
 
 ## Usage
 
@@ -177,6 +209,16 @@ XSTR ( "more text" , 123 )  // handles optional whitespace
 ```
 
 Only text within these XSTR strings is spell-checked. The file structure is preserved exactly. Mission title processing is conditional — it only applies when a mission title pattern is found in the file, so table files (.tbl/.tbm) are handled naturally without any special casing.
+
+### Performance Optimizations
+
+The spell checker employs several optimizations for fast processing of mission files:
+
+1. **Deferred suggestions for capitalized words**: When a capitalized word fails the spell check, it is reported as an unrecognized proper noun without calling `suggest()`. The suggestion algorithm is expensive (generating hundreds of thousands of edit-distance candidates), so skipping it for words that won't be auto-corrected provides a large speedup.
+
+2. **Per-file word cache**: A cache of `check()` and `suggest()` results is maintained for each file. Mission files are highly repetitive — the same words appear in briefing text, command briefings, debriefings, and messages — so each unique word only triggers one `dictionary.check()` call and at most one `dictionary.suggest()` call per file. Suggestions are computed lazily: only when a misspelled word actually needs auto-correction.
+
+3. **Event loop yielding**: The XSTR processing loop yields to the browser event loop every 20 strings, preventing the UI from becoming unresponsive during long spell-check runs.
 
 ### Correction Rules
 
@@ -258,25 +300,25 @@ Review these manually as they may be intentional.
 
 ## Browser Compatibility
 
-Works in **Chromium-based browsers**:
-- Google Chrome
-- Microsoft Edge
-- Brave Browser
-- Opera
-
-Does not work in Firefox due to differences in file loading APIs.
+Works in all modern browsers that support the [Compression Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API):
+- Google Chrome (80+)
+- Microsoft Edge (80+)
+- Firefox (113+)
+- Safari (16.4+)
+- Brave, Opera, and other Chromium-based browsers
 
 ## Technical Details
 
 - **Language**: JavaScript (runs entirely in browser)
-- **Dependencies**: Typo.js spell checking library
-- **Dictionary**: Hunspell-style dictionaries (en_US included with Typo.js)
+- **Dependencies**: Typo.js spell checking library (enhanced with pre-parsed dictionary support)
+- **Dictionaries**: Pre-parsed gzipped JSON for built-in languages; Hunspell-style .aff/.dic for custom languages
 - **File Handling**: Processes files client-side, no data sent to servers
+- **Dictionary Generation**: Node.js script with optional re2 dependency for safe regex handling
 
 ## Troubleshooting
 
 **Dictionary fails to load:**
-- Make sure you're using a supported browser (Chrome or Brave)
+- Make sure you're using a modern browser with Compression Streams API support (Chrome 80+, Firefox 113+, Safari 16.4+, Edge 80+)
 - Check that you have an internet connection (dictionaries load from GitHub Pages)
 - If using a custom language, verify the files are in Hunspell format (.aff and .dic)
 - Check browser console (F12) for error messages
@@ -304,7 +346,7 @@ A: Check the box labeled "Show all corrections and issues (no truncation)" in th
 
 **Q: Why aren't GTA, GTVA, NTF, and other organizations being flagged?**
 
-A: The spell checker has a built-in whitelist for common FreeSpace organizations: **GTA, PVN, PVE, HOL, HoL, GTVA, GVTA, NTF, NTB**. These are recognized as correct and won't be flagged as "Unrecognized capitalized word". If you need to add more organizations, you can edit the `freespaceOrgs` Set in the HTML file's `spellCheckString` function.
+A: The spell checker has a built-in whitelist for common FreeSpace organizations: **GTA, PVN, PVE, HOL, HoL, GTVA, GVTA, NTF, NTB**. These are recognized as correct and won't be flagged as "Unrecognized capitalized word". If you need to add more organizations, you can edit the `freespaceOrgs` Set in `spell-checker.js`.
 
 **Q: Why aren't ship qualifiers like GTF, GTD, NTD, or GTCv being flagged?**
 
@@ -356,6 +398,17 @@ You can safely ignore most of these flags as they're usually proper nouns.
 
 **Important:** Each unique proper noun is only listed once in the report, even if it appears many times in the file. For example, if "Actium" appears 50 times, you'll see one entry for "Actium" with one example string, not 50 identical entries. This keeps the report clean and focused.
 
+**Q: How do I regenerate a pre-parsed dictionary after updating the source .aff/.dic files?**
+
+A: Run the generation script from the repository root:
+```bash
+node generate-preparsed-dict.js it_IT ./dictionaries ./preparsed
+```
+This will expand all affix rules and write `./preparsed/it_IT/dictionary.json.gz`. The script reports expansion diagnostics (histogram, percentiles, limit hits) to help identify dictionaries with problematic affix rules. Then run the test script to verify:
+```bash
+node test-preparsed.js it_IT ./preparsed
+```
+
 ## Credits
 
 - Spell checking powered by [Typo.js](https://github.com/cfinke/Typo.js) by Christopher Finke
@@ -388,4 +441,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
