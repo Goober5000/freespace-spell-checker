@@ -322,9 +322,15 @@ document.getElementById('processMoreBtn').addEventListener('click', resetApp);
 const resultsContainer = document.getElementById('results');
 
 resultsContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action="download"]');
-    if (btn) {
-        downloadFile(Number(btn.dataset.fileIndex));
+    const downloadBtn = e.target.closest('[data-action="download"]');
+    if (downloadBtn) {
+        downloadFile(Number(downloadBtn.dataset.fileIndex));
+    }
+
+    const showAllBtn = e.target.closest('[data-action="showAll"]');
+    if (showAllBtn) {
+        document.getElementById('showAllItems').checked = true;
+        updateResultsDisplay();
     }
 });
 
@@ -1346,7 +1352,7 @@ function renderResults() {
                                 </div>
                             </div>
                         `}).join('')}
-                        ${remainingCorrections > 0 ? `<p style="text-align: center; color: #6c757d; margin-top: 10px;">...and ${remainingCorrections} more (enable "Show all items" to review)</p>` : ''}
+                        ${remainingCorrections > 0 ? `<p style="text-align: center; color: #6c757d; margin-top: 10px;">...and ${remainingCorrections} more (<button data-action="showAll" style="background: none; border: none; color: #007bff; cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">click to show all items</button>)</p>` : ''}
                     </div>
                 `;
             }
@@ -1366,7 +1372,7 @@ function renderResults() {
                                 <div class="item-text" style="color: #856404;">"${highlightedText}"</div>
                             </div>
                         `}).join('')}
-                        ${remainingGrammar > 0 ? `<p style="text-align: center; color: #6c757d; margin-top: 10px;">...and ${remainingGrammar} more</p>` : ''}
+                        ${remainingGrammar > 0 ? `<p style="text-align: center; color: #6c757d; margin-top: 10px;">...and ${remainingGrammar} more (<button data-action="showAll" style="background: none; border: none; color: #007bff; cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">click to show all items</button>)</p>` : ''}
                     </div>
                 `;
             }
