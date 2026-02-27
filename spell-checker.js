@@ -974,33 +974,31 @@ outerWordLoop:
         
         // Check if word is spelled correctly
         if (!dictionary.check(word)) {
-            const suggestions = dictionary.suggest(word, 1);
+            // Only auto-correct if:
+            // 1. The word is all lowercase (not a proper noun)
+            // 2. OR the word has mixed case that looks like a typo
+            // BUT: ALL CAPS words should be protected as acronyms
+            const isAllCaps = word === word.toUpperCase();
+            const hasWeirdMixedCase = word !== word.toLowerCase() && 
+                                       word !== word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() &&
+                                       !isAllCaps;
             
-            if (suggestions && suggestions.length > 0) {
-                const suggestion = suggestions[0];
+            if (!isCapitalized || hasWeirdMixedCase) {
+                // Auto-correct lowercase words and obvious typos
+                const suggestions = dictionary.suggest(word, 1);
                 
-                // Only auto-correct if:
-                // 1. The word is all lowercase (not a proper noun)
-                // 2. OR the word has mixed case that looks like a typo
-                // BUT: ALL CAPS words should be protected as acronyms
-                const isAllCaps = word === word.toUpperCase();
-                const hasWeirdMixedCase = word !== word.toLowerCase() && 
-                                           word !== word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() &&
-                                           !isAllCaps;
-                
-                if (!isCapitalized || hasWeirdMixedCase) {
-                    // Auto-correct lowercase words and obvious typos
+                if (suggestions && suggestions.length > 0) {
                     wordChanges.push({
                         original: word,
-                        suggestion: suggestion,
+                        suggestion: suggestions[0],
                         index: words[i].index,
                         length: word.length
                     });
-                } else {
-                    // Capitalized word that's misspelled - likely a proper noun
-                    // Report it but don't auto-correct
-                    grammarIssues.push(`Unrecognized capitalized word (possibly a proper noun): "${word}"`);
                 }
+            } else {
+                // Capitalized word that's misspelled - likely a proper noun
+                // Report it but don't auto-correct
+                grammarIssues.push(`Unrecognized capitalized word (possibly a proper noun): "${word}"`);
             }
         }
     }
