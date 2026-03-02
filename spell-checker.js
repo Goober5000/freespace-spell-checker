@@ -377,6 +377,12 @@ async function processFiles() {
     totalCorrections = 0;
     totalGrammarIssues = 0;
 
+    // Word-level cache: avoids redundant dictionary lookups for words that
+    // appear in multiple XSTR strings within the same batch.  Mission files
+    // are highly repetitive (briefing, debriefing, messages often share
+    // vocabulary), so this can eliminate the majority of check/suggest calls.
+    const wordCache = new Map();  // word → { correct: boolean, suggestion: string|null }
+
     for (let i = 0; i < selectedFiles.length; i++) {
         document.getElementById('processingStatus').textContent = 
             `Processing ${i + 1} of ${selectedFiles.length}: ${selectedFiles[i].name}`;
@@ -385,7 +391,7 @@ async function processFiles() {
         document.getElementById('progressFill').style.width = progress + '%';
 
         try {
-            const result = await processFile(selectedFiles[i]);
+            const result = await processFile(selectedFiles[i], wordCache);
             processedFiles.push(result);
             totalCorrections += result.corrections;
             totalGrammarIssues += result.grammarIssues.length;
@@ -403,7 +409,7 @@ async function processFiles() {
     displayResults();
 }
 
-async function processFile(file) {
+async function processFile(file, wordCache) {
     const { text, encoding, hasBOM } = await detectAndReadFile(file);
     
     // Extract all XSTR strings
@@ -426,12 +432,6 @@ async function processFile(file) {
     // Create replacement map
     const replacements = new Map();
     const twoSpaces = document.getElementById('twoSpacesAfterSentence').checked;
-    
-    // Word-level cache: avoids redundant dictionary lookups for words that
-    // appear in multiple XSTR strings within the same file.  Mission files
-    // are highly repetitive (briefing, debriefing, messages often share
-    // vocabulary), so this can eliminate the majority of check/suggest calls.
-    const wordCache = new Map();  // word → { correct: boolean, suggestion: string|null }
     
     for (let i = 0; i < xstrStrings.length; i++) {
         // Yield to the event loop periodically so the browser can repaint
